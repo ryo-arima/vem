@@ -9,6 +9,15 @@ VEM is a command-line tool written in Rust for efficiently managing multiple Vim
 - 📁 **Organized**: Keep each environment isolated to prevent configuration conflicts
 - 🎯 **Simple**: Intuitive command-line interface
 
+## Documentation
+
+📖 **[Read the full documentation](https://ryo-arima.github.io/vem/)**
+
+- [Quick Start Guide](https://ryo-arima.github.io/vem/quick-start.html)
+- [Installation Instructions](https://ryo-arima.github.io/vem/installation.html)
+- [Command Reference](https://ryo-arima.github.io/vem/commands.html)
+- [Architecture Overview](https://ryo-arima.github.io/vem/architecture.html)
+
 ## Installation
 
 ### Using Cargo
@@ -125,6 +134,10 @@ This layered architecture ensures:
 
 ```
 vem/
+├── docs/                # Documentation (mdBook)
+│   ├── src/            # Documentation source
+│   ├── book.toml       # mdBook configuration
+│   └── book/           # Generated documentation (ignored)
 ├── src/                 # Source code
 │   ├── cnf/            # Configuration layer
 │   ├── ctl/            # Control layer
