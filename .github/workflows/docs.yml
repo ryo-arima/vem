@@ -26,7 +26,12 @@ jobs:
         mdbook-version: 'latest'
     
     - name: Build book
-      run: cd docs && mdbook build
+      run: |
+        cd docs
+        mdbook build
+        ls -la book/
+        echo "Built files:"
+        find book/ -name "*.html" | head -10
     
     - name: Setup Pages
       uses: actions/configure-pages@v4
