@@ -58,6 +58,9 @@ temp/
 dist/
 build/
 
+# mdBook generated files
+docs/book/
+
 # VEM specific
 .vem/
 *.vem
