@@ -84,12 +84,58 @@ Each Vim environment is managed as follows:
 └── current -> environments/development
 ```
 
+## Project Architecture
+
+VEM follows a modular architecture with clear separation of concerns:
+
+### Core Modules
+
+```
+src/
+├── main.rs          # Application entry point
+├── cnf/             # Configuration management
+├── ctl/             # Control layer (commands and CLI)
+├── ent/             # Entity definitions (data models)
+├── rep/             # Repository layer (data persistence)
+└── usc/             # Use case layer (business logic)
+```
+
+### Architecture Overview
+
+- **Configuration (`cnf`)**: Handles application settings and environment configurations
+- **Control (`ctl`)**: Command-line interface and user interaction handling
+- **Entity (`ent`)**: Core data structures and domain models
+- **Repository (`rep`)**: Data storage and retrieval operations
+- **Use Case (`usc`)**: Business logic and application workflows
+
+This layered architecture ensures:
+- Clear separation of concerns
+- Easy testing and maintenance
+- Scalable codebase structure
+- Clean dependency management
+
 ## Development
 
 ### Prerequisites
 
 - Rust 1.70 or higher
 - Git
+
+### Project Structure
+
+```
+vem/
+├── src/                 # Source code
+│   ├── cnf/            # Configuration layer
+│   ├── ctl/            # Control layer
+│   ├── ent/            # Entity layer
+│   ├── rep/            # Repository layer
+│   ├── usc/            # Use case layer
+│   └── main.rs         # Entry point
+├── Cargo.toml          # Project configuration
+├── Cargo.lock          # Dependency lock file
+└── README.md           # Project documentation
+```
 
 ### Setup
 
