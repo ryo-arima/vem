@@ -23,6 +23,8 @@ no-section-label = false
 git-repository-url = "https://github.com/ryo-arima/vem"
 git-repository-icon = "fa-github"
 edit-url-template = "https://github.com/ryo-arima/vem/edit/main/docs/{path}"
+site-url = "https://ryo-arima.github.io/vem/"
+root-url = "https://ryo-arima.github.io/vem/"
 
 [output.html.search]
 enable = true
