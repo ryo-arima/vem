@@ -1,0 +1,17 @@
+[package]
+name = "vem"
+version = "0.1.0"
+edition = "2021"
+authors = ["ryo-arima"]
+description = "Vim Environment Manager - A tool to manage multiple Vim configurations"
+license = "MIT"
+repository = "https://github.com/ryo-arima/vem"
+keywords = ["vim", "environment", "configuration", "cli"]
+categories = ["command-line-utilities", "development-tools"]
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+dirs = "5.0"
+anyhow = "1.0"
