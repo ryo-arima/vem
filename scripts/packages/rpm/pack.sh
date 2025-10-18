@@ -37,9 +37,22 @@ main() {
     -e "s/__ARCH__/${arch}/g" \
     "$spec"
 
+  # Determine rpmbuild target (maps to %{_target_cpu})
+  local rb_target
+  if [[ -n "${TARGET:-}" ]]; then
+    case "$TARGET" in
+      x86_64-*-linux-gnu*) rb_target="x86_64" ;;
+      aarch64-*-linux-gnu*) rb_target="aarch64" ;;
+      *) rb_target="$(uname -m)" ;;
+    esac
+  else
+    rb_target="$(uname -m)"
+  fi
+
   rpmbuild \
     --define "_topdir $topdir" \
     --define "_buildrootdir $buildroot" \
+    --target "$rb_target" \
     -bb "$spec"
 
   rpm=$(find "$topdir/RPMS" -name "*.rpm" -print -quit)
