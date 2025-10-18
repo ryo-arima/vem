@@ -42,15 +42,15 @@ ensure_release_build() {
     bin="$root/target/$target/release/$name"
     if [[ ! -x "$bin" ]]; then
       if command -v cross >/dev/null 2>&1; then
-        (cd "$root" && cross build --release --target "$target")
+        (cd "$root" && cross build --release --target "$target") 1>&2
       else
-        (cd "$root" && cargo build --release --target "$target")
+        (cd "$root" && cargo build --release --target "$target") 1>&2
       fi
     fi
   else
     bin="$root/target/release/$name"
     if [[ ! -x "$bin" ]]; then
-      (cd "$root" && cargo build --release)
+      (cd "$root" && cargo build --release) 1>&2
     fi
   fi
   echo "$bin"
