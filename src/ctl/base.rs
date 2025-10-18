@@ -1,5 +1,4 @@
-use crate::ent::{ExitCode, VemError};
-use crate::usc::EnvironmentManager;
+use crate::usc::environment::environment_manager_t;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
@@ -27,6 +26,14 @@ pub enum Commands {
     },
     /// Show the current active environment
     Current,
+    /// Update an environment's metadata
+    Update {
+        /// Name of the environment to update
+        name: String,
+        /// New description
+        #[arg(short, long)]
+        description: Option<String>,
+    },
     /// Remove an environment
     Remove {
         /// Name of the environment to remove
@@ -60,14 +67,11 @@ pub struct Cli {
 
 /// Handle the execution of a VEM command
 pub fn handle_command(command: Commands) -> Result<()> {
-    let env_manager = EnvironmentManager::new()?;
+    let env_manager = environment_manager_t::new()?;
 
     match command {
-        Commands::Create {
-            name,
-            description: _,
-        } => {
-            env_manager.create_environment(name.as_str())?;
+        Commands::Create { name, description } => {
+            env_manager.create_environment(&name, description)?;
             println!("Environment '{}' created successfully", name);
         }
         Commands::List { verbose } => {
@@ -77,21 +81,25 @@ pub fn handle_command(command: Commands) -> Result<()> {
             } else {
                 for env in environments {
                     if verbose {
-                        println!("{} ({})", env.name, env.path.display());
+                        println!("{} ({})", env.name(), env.path().display());
                     } else {
-                        println!("{}", env.name);
+                        println!("{}", env.name());
                     }
                 }
             }
         }
         Commands::Switch { name } => {
-            env_manager.switch_environment(name.as_str())?;
+            env_manager.switch_environment(&name)?;
             println!("Switched to environment '{}'", name);
         }
         Commands::Current => match env_manager.get_current_environment() {
-            Ok(env) => println!("{}", env.name),
+            Ok(env) => println!("{}", env.name()),
             Err(_) => println!("No environment currently active"),
         },
+        Commands::Update { name, description } => {
+            env_manager.update_environment(&name, description)?;
+            println!("Environment '{}' updated successfully", name);
+        }
         Commands::Remove { name, force } => {
             if !force {
                 print!(
@@ -111,7 +119,7 @@ pub fn handle_command(command: Commands) -> Result<()> {
                 }
             }
 
-            env_manager.remove_environment(name.as_str())?;
+            env_manager.remove_environment(&name)?;
             println!("Environment '{}' removed successfully", name);
         }
     }
@@ -134,17 +142,5 @@ pub fn run_cli() -> Result<()> {
     }
 
     // Handle the command
-    match handle_command(cli.command) {
-        Ok(_) => std::process::exit(ExitCode::Success as i32),
-        Err(err) => {
-            if !cli.quiet {
-                eprintln!("Error: {}", err);
-            }
-            let exit_code = match err.downcast_ref::<VemError>() {
-                Some(vem_err) => ExitCode::from(vem_err) as i32,
-                None => ExitCode::GeneralError as i32,
-            };
-            std::process::exit(exit_code);
-        }
-    }
+    handle_command(cli.command)
 }
