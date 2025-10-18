@@ -24,12 +24,9 @@ main() {
   topdir="$(mktemp -d)"
   mkdir -p "$topdir/BUILD" "$topdir/RPMS" "$topdir/SOURCES" "$topdir/SPECS" "$topdir/SRPMS"
   specdir="$topdir/SPECS"
-  # rpmbuild will use ${_buildrootdir}/%{name}-%{version}-%{release}.%{_target_cpu}
-  # so here we stage into that nested directory explicitly.
+  # Place compiled binary as Source0 for spec to install
+  cp "$bin" "$topdir/SOURCES/$name"
   buildroot="$topdir/BUILDROOT"
-  subdir="${name}-${version}-1.${arch}"
-  mkdir -p "$buildroot/$subdir/usr/local/bin"
-  install -m 0755 "$bin" "$buildroot/$subdir/usr/local/bin/$name"
 
   spec_template="$SCRIPT_DIR/spec.template.spec"
   spec="$specdir/${name}.spec"
@@ -41,20 +38,27 @@ main() {
     "$spec"
 
   # Determine rpmbuild target (maps to %{_target_cpu})
-  local rb_target
+  local rb_target_cpu rb_target
   if [[ -n "${TARGET:-}" ]]; then
     case "$TARGET" in
-      x86_64-*-linux-gnu*) rb_target="x86_64" ;;
-      aarch64-*-linux-gnu*) rb_target="aarch64" ;;
-      *) rb_target="$(uname -m)" ;;
+      x86_64-*-linux-gnu*) rb_target_cpu="x86_64" ;;
+      aarch64-*-linux-gnu*) rb_target_cpu="aarch64" ;;
+      *) rb_target_cpu="$(uname -m)" ;;
     esac
   else
-    rb_target="$(uname -m)"
+    rb_target_cpu="$(uname -m)"
   fi
+  # Use a full target triple for better compatibility on Debian-based rpmbuilds
+  case "$rb_target_cpu" in
+    x86_64) rb_target="x86_64-linux" ;;
+    aarch64|arm64) rb_target="aarch64-linux" ;;
+    *) rb_target="${rb_target_cpu}-linux" ;;
+  esac
 
   rpmbuild \
     --define "_topdir $topdir" \
     --define "_buildrootdir $buildroot" \
+    --define "_target_cpu $rb_target_cpu" \
     --target "$rb_target" \
     -bb "$spec"
 
