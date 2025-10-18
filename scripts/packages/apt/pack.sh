@@ -34,6 +34,8 @@ main() {
     -e "s/__ARCH__/${arch}/g" \
     -e "s/__MAINTAINER__/${maintainer//\//\/}/g" \
     "$ctlfile"
+  # Ensure control file ends with a newline (dpkg-deb requires it)
+  tail -c1 "$ctlfile" | read -r _ || echo >> "$ctlfile"
 
   deb="$dist/${name}_${version}_${arch}.deb"
   fakeroot dpkg-deb --build "$pkgdir" "$deb"
