@@ -24,9 +24,12 @@ main() {
   topdir="$(mktemp -d)"
   mkdir -p "$topdir/BUILD" "$topdir/RPMS" "$topdir/SOURCES" "$topdir/SPECS" "$topdir/SRPMS"
   specdir="$topdir/SPECS"
-  buildroot="$topdir/BUILDROOT/${name}-${version}-1.${arch}"
-  mkdir -p "$buildroot/usr/local/bin"
-  install -m 0755 "$bin" "$buildroot/usr/local/bin/$name"
+  # rpmbuild will use ${_buildrootdir}/%{name}-%{version}-%{release}.%{_target_cpu}
+  # so here we stage into that nested directory explicitly.
+  buildroot="$topdir/BUILDROOT"
+  subdir="${name}-${version}-1.${arch}"
+  mkdir -p "$buildroot/$subdir/usr/local/bin"
+  install -m 0755 "$bin" "$buildroot/$subdir/usr/local/bin/$name"
 
   spec_template="$SCRIPT_DIR/spec.template.spec"
   spec="$specdir/${name}.spec"
