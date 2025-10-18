@@ -1,0 +1,8 @@
+Package: __NAME__
+Version: __VERSION__
+Section: utils
+Priority: optional
+Architecture: __ARCH__
+Maintainer: __MAINTAINER__
+Description: VEM (Vim Environment Manager)
+ A tool to manage multiple Vim environments.
