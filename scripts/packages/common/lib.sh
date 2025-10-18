@@ -3,27 +3,33 @@ set -euo pipefail
 
 # Resolve project root (directory containing Cargo.toml)
 project_root() {
-  local dir
-  dir="$(cd "$(dirname "${BASH_SOURCE[0]}")"/../.. && pwd)"
-  if [[ ! -f "$dir/Cargo.toml" ]]; then
-    echo "Error: Cargo.toml not found near $dir" >&2
-    exit 1
-  fi
-  echo "$dir"
+  local dir start
+  dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  start="$dir"
+  # Climb up to 6 levels to find Cargo.toml to be robust to layout changes
+  for _ in 1 2 3 4 5 6; do
+    if [[ -f "$dir/Cargo.toml" ]]; then
+      echo "$dir"
+      return 0
+    fi
+    dir="$(dirname "$dir")"
+  done
+  echo "Error: Cargo.toml not found while ascending from $start" >&2
+  exit 1
 }
 
 # Extract version from Cargo.toml [package]
 project_version() {
   local root
   root="$(project_root)"
-  awk -F '"' '/^version\s*=\s*"/ {print $2; exit}' "$root/Cargo.toml"
+  awk -F '"' '/^[[:space:]]*version[[:space:]]*=[[:space:]]*"/ {print $2; exit}' "$root/Cargo.toml"
 }
 
 # Binary name (assumed to match package name)
 project_name() {
   local root
   root="$(project_root)"
-  awk -F '"' '/^name\s*=\s*"/ {print $2; exit}' "$root/Cargo.toml"
+  awk -F '"' '/^[[:space:]]*name[[:space:]]*=[[:space:]]*"/ {print $2; exit}' "$root/Cargo.toml"
 }
 
 # Ensure release build exists; build if missing

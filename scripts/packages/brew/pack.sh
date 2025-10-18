@@ -4,6 +4,21 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=../common/lib.sh
 source "$SCRIPT_DIR/../common/lib.sh"
 
+to_camel() {
+  # Convert string like "my-tool_name" -> "MyToolName"
+  local s="$1" out="" w f rest
+  # Replace non-alphanumeric with spaces
+  s="$(printf '%s' "$s" | sed 's/[^A-Za-z0-9]\+/ /g')"
+  for w in $s; do
+    f="${w%${w#?}}"
+    rest="${w#?}"
+    f="$(printf '%s' "$f" | tr '[:lower:]' '[:upper:]')"
+    rest="$(printf '%s' "$rest" | tr '[:upper:]' '[:lower:]')"
+    out+="$f$rest"
+  done
+  printf '%s' "$out"
+}
+
 main() {
   local root name version tarball sha dist formula_dir formula
   root="$(project_root)"
@@ -41,8 +56,7 @@ end
 RUBY
 
   local class_name
-  class_name="$(tr '[:lower:]-' '[:upper:]_' <<<"$name")"
-  class_name="${class_name^}" # capitalize first
+  class_name="$(to_camel "$name")"
 
   # URL can be overridden via BREW_URL (e.g., GitHub Releases asset URL)
   local url
