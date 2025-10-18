@@ -48,6 +48,18 @@ main() {
   else
     rb_target_cpu="$(uname -m)"
   fi
+  # Normalize host cpu
+  local host_cpu
+  case "$(uname -m)" in
+    x86_64) host_cpu="x86_64" ;;
+    aarch64|arm64) host_cpu="aarch64" ;;
+    *) host_cpu="$(uname -m)" ;;
+  esac
+  # If attempting to build RPM for a different CPU than host, skip gracefully.
+  if [[ "$rb_target_cpu" != "$host_cpu" ]]; then
+    echo "Skipping RPM packaging for target CPU '$rb_target_cpu' on host '$host_cpu' (cross-rpmbuild not supported in this workflow)."
+    exit 0
+  fi
   # Use distro-expected triples for Debian/Ubuntu rpmbuild
   case "$rb_target_cpu" in
     x86_64) rb_target="x86_64-linux-gnu" ;;

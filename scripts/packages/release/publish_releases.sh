@@ -12,7 +12,14 @@ gh release delete latest -y --cleanup-tag || true
 gh release create latest \
   --title "VEM latest (v${VERSION})" \
   --notes "Automated release from main.\nVersion: v${VERSION}" || true
-gh release upload latest ${dist_dir}/** --clobber
+echo "Uploading assets to latest..."
+assets=( )
+while IFS= read -r -d '' f; do assets+=("$f"); done < <(find "$dist_dir" -type f \( -name '*.tar.gz' -o -name '*.zip' -o -name '*.deb' -o -name '*.rpm' \) -print0)
+if (( ${#assets[@]} > 0 )); then
+  gh release upload latest "${assets[@]}" --clobber
+else
+  echo "No assets found under $dist_dir"
+fi
 
 mkdir -p ${dist_dir}/aliases
 shopt -s nullglob
@@ -40,7 +47,10 @@ tag="v${VERSION}-${DATE}"
 gh release create "$tag" \
   --title "VEM v${VERSION} - ${DATE}" \
   --notes "Automated release from main.\nVersion: v${VERSION}\nDate: ${DATE} (UTC)" || true
-gh release upload "$tag" ${dist_dir}/** --clobber
+echo "Uploading assets to $tag..."
+if (( ${#assets[@]} > 0 )); then
+  gh release upload "$tag" "${assets[@]}" --clobber
+fi
 if compgen -G "${dist_dir}/aliases/*" >/dev/null; then
   gh release upload "$tag" ${dist_dir}/aliases/* --clobber
 fi
