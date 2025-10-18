@@ -75,9 +75,11 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist-${{ matrix.arch }}
+          # Use target triple to avoid name collisions across OSes (e.g., x86_64 Linux vs macOS)
+          name: dist-${{ matrix.target }}
           path: dist/**
           if-no-files-found: error
+          overwrite: true
 
   release:
     name: Create Releases
