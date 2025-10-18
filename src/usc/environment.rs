@@ -11,9 +11,9 @@ impl EnvironmentManager {
     pub fn new() -> Result<Self, VemError> {
         let config = AppConfig::load()?;
         config.validate()?;
-        
+
         let repository = EnvironmentRepository::new(config);
-        
+
         Ok(Self { repository })
     }
 
@@ -34,7 +34,6 @@ impl EnvironmentManager {
         Ok(())
     }
 
-    /// Get the current environment
     pub fn get_current_environment(&self) -> Result<Environment, VemError> {
         self.repository.get_current()
     }

@@ -124,9 +124,13 @@ pub fn run_cli() -> Result<()> {
 
     // Set up logging/output level based on flags
     if cli.verbose {
-        unsafe { std::env::set_var("RUST_LOG", "debug"); }
+        unsafe {
+            std::env::set_var("RUST_LOG", "debug");
+        }
     } else if cli.quiet {
-        unsafe { std::env::set_var("RUST_LOG", "error"); }
+        unsafe {
+            std::env::set_var("RUST_LOG", "error");
+        }
     }
 
     // Handle the command

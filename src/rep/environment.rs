@@ -27,8 +27,8 @@ impl EnvironmentRepository {
         }
 
         // Create environment directory structure
-        fs::create_dir_all(&env_path)?;
-        
+    fs::create_dir_all(&env_path)?;
+
         let env = Environment::new(name, env_path.clone());
 
         // Create .vimrc file
@@ -59,12 +59,12 @@ impl EnvironmentRepository {
             return Ok(environments);
         }
 
-        let entries = fs::read_dir(&self.config.environment_root)?;
-        
+    let entries = fs::read_dir(&self.config.environment_root)?;
+
         for entry in entries {
             let entry = entry?;
             let path = entry.path();
-            
+
             if path.is_dir() {
                 if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
                     if let Ok(env) = self.load(name) {
@@ -81,14 +81,14 @@ impl EnvironmentRepository {
 
     /// Load an environment by name
     pub fn load(&self, name: &str) -> Result<Environment, VemError> {
-        let env_path = self.config.environment_root.join(name);
-        
+    let env_path = self.config.environment_root.join(name);
+
         if !env_path.exists() {
             return Err(VemError::EnvironmentNotFound(name.to_string()));
         }
 
-        let mut env = Environment::new(name, env_path);
-        
+    let mut env = Environment::new(name, env_path);
+
         // Load metadata if it exists
         let meta_path = env.meta_path();
         if meta_path.exists() {
@@ -101,8 +101,8 @@ impl EnvironmentRepository {
 
     /// Remove an environment
     pub fn remove(&self, name: &str) -> Result<(), VemError> {
-        let env_path = self.config.environment_root.join(name);
-        
+    let env_path = self.config.environment_root.join(name);
+
         if !env_path.exists() {
             return Err(VemError::EnvironmentNotFound(name.to_string()));
         }
@@ -122,14 +122,14 @@ impl EnvironmentRepository {
 
     /// Get the current environment
     pub fn get_current(&self) -> Result<Environment, VemError> {
-        let current_link = AppConfig::current_link_path();
-        
+    let current_link = AppConfig::current_link_path();
+
         if !current_link.exists() {
             return Err(VemError::NoCurrentEnvironment);
         }
 
-        let target = fs::read_link(&current_link)?;
-        
+    let target = fs::read_link(&current_link)?;
+
         if let Some(name) = target.file_name().and_then(|n| n.to_str()) {
             self.load(name)
         } else {
@@ -140,8 +140,8 @@ impl EnvironmentRepository {
     /// Set the current environment
     pub fn set_current(&self, name: &str) -> Result<(), VemError> {
         let env = self.load(name)?; // Validate environment exists
-        let current_link = AppConfig::current_link_path();
-        
+    let current_link = AppConfig::current_link_path();
+
         // Remove existing symlink if it exists
         if current_link.exists() {
             fs::remove_file(&current_link)?;
@@ -151,8 +151,8 @@ impl EnvironmentRepository {
         #[cfg(unix)]
         {
             std::os::unix::fs::symlink(&env.path, &current_link)?;
-        }
-        
+    }
+
         #[cfg(windows)]
         {
             std::os::windows::fs::symlink_dir(&env.path, &current_link)?;

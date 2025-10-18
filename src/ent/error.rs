@@ -46,7 +46,6 @@ impl fmt::Display for VemError {
         }
     }
 }
-
 impl std::error::Error for VemError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
