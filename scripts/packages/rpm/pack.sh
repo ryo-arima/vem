@@ -48,11 +48,11 @@ main() {
   else
     rb_target_cpu="$(uname -m)"
   fi
-  # Use a full target triple for better compatibility on Debian-based rpmbuilds
+  # Use distro-expected triples for Debian/Ubuntu rpmbuild
   case "$rb_target_cpu" in
-    x86_64) rb_target="x86_64-linux" ;;
-    aarch64|arm64) rb_target="aarch64-linux" ;;
-    *) rb_target="${rb_target_cpu}-linux" ;;
+    x86_64) rb_target="x86_64-linux-gnu" ;;
+    aarch64|arm64) rb_target="aarch64-linux-gnu" ;;
+    *) rb_target="${rb_target_cpu}-linux-gnu" ;;
   esac
 
   rpmbuild \
