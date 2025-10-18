@@ -19,9 +19,7 @@ impl EnvironmentManager {
 
     /// Create a new environment
     pub fn create_environment(&self, name: &str) -> Result<Environment, VemError> {
-        println!("Creating environment: {}", name);
         let env = self.repository.create(name)?;
-        println!("Created environment: {}", name);
         Ok(env)
     }
 
@@ -32,9 +30,7 @@ impl EnvironmentManager {
 
     /// Switch to an environment
     pub fn switch_environment(&self, name: &str) -> Result<(), VemError> {
-        println!("Switching to environment: {}", name);
         self.repository.set_current(name)?;
-        println!("Switched to environment: {}", name);
         Ok(())
     }
 
@@ -45,9 +41,7 @@ impl EnvironmentManager {
 
     /// Remove an environment
     pub fn remove_environment(&self, name: &str) -> Result<(), VemError> {
-        println!("Removing environment: {}", name);
         self.repository.remove(name)?;
-        println!("Removed environment: {}", name);
         Ok(())
     }
 }

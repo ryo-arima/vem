@@ -63,6 +63,8 @@ impl Environment {
             && !name.contains('/')
             && !name.contains('\\')
             && !name.contains(' ')
-            && name.chars().all(|c| c.is_alphanumeric() || c == '-' || c == '_')
+            && name
+                .chars()
+                .all(|c| c.is_alphanumeric() || c == '-' || c == '_')
     }
 }

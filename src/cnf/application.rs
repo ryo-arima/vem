@@ -33,8 +33,8 @@ pub enum SymlinkMode {
 
 impl Default for AppConfig {
     fn default() -> Self {
-        let home_dir = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-        
+    let home_dir = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+
         Self {
             default_environment: None,
             auto_switch: false,
@@ -75,8 +75,8 @@ impl AppConfig {
 
     /// Load configuration from file, creating default if not exists
     pub fn load() -> Result<Self, VemError> {
-        let config_path = Self::config_path();
-        
+    let config_path = Self::config_path();
+
         if !config_path.exists() {
             let config = Self::default();
             config.save()?;
@@ -90,8 +90,8 @@ impl AppConfig {
 
     /// Save configuration to file
     pub fn save(&self) -> Result<(), VemError> {
-        let config_path = Self::config_path();
-        
+    let config_path = Self::config_path();
+
         // Ensure parent directory exists
         if let Some(parent) = config_path.parent() {
             std::fs::create_dir_all(parent)?;
