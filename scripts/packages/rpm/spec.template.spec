@@ -11,12 +11,7 @@ BuildArch:      %{_target_cpu}
 VEM is a tool to manage multiple Vim environments.
 
 %install
-mkdir -p %{buildroot}/usr/local/bin
-install -m 0755 __NAME__ %{buildroot}/usr/local/bin/__NAME__
+# Files are pre-staged into %{buildroot} by the external packaging script.
 
 %files
 /usr/local/bin/__NAME__
-
-%changelog
-* Thu Jan 01 1970 Package Bot - __VERSION__-1
-- Initial package
