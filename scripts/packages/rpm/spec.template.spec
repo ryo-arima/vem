@@ -5,7 +5,7 @@ Summary:        VEM (Vim Environment Manager)
 
 License:        MIT
 URL:            https://github.com/ryo-arima/vem
-BuildArch:      __ARCH__
+BuildArch:      %{_target_cpu}
 
 %description
 VEM is a tool to manage multiple Vim environments.
