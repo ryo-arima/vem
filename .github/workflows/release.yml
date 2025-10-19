@@ -58,9 +58,10 @@ jobs:
           set -euo pipefail
           ver=$(grep -m1 '^version\s*=\s*"' Cargo.toml | sed -E 's/.*"([^"]+)".*/\1/')
           echo "version=${ver}" >> "$GITHUB_OUTPUT"
-          echo "date=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
-          # Extract git tag if available
-          tag=$(git describe --tags --exact-match 2>/dev/null || echo "${ver}")
+          datetime=$(date -u +%Y%m%d%H%M)
+          echo "date=${datetime}" >> "$GITHUB_OUTPUT"
+          # Always use version-datetime format
+          tag="${ver}-${datetime}"
           echo "tag=${tag}" >> "$GITHUB_OUTPUT"
 
       - name: Build and package (Linux)
