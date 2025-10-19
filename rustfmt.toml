@@ -4,8 +4,8 @@
 
 edition = "2024"
 
-# Import formatting - keep manual formatting, only enforce trailing commas
-# Requires nightly toolchain
+# Import formatting - skip formatting imports to preserve manual style
+skip_children = true
 imports_granularity = "Preserve"    # Preserve existing import structure
 group_imports = "Preserve"          # Preserve existing grouping
 
@@ -17,11 +17,11 @@ tab_spaces = 4
 indent_style = "Block"
 hard_tabs = false
 
-# Line length - set high to avoid unwanted line breaks
+# Line length
 max_width = 120
-use_small_heuristics = "Off"
+use_small_heuristics = "Default"
 
-# Import and use statement layout
+# Import and use statement layout - disable reordering
 reorder_imports = false
 reorder_modules = false
 
