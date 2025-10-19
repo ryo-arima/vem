@@ -1,23 +1,25 @@
 name: Auto Approve
 on:
-  pull_request_target:
+  pull_request:
     types:
       - opened
       - reopened
       - synchronize
       - ready_for_review
   workflow_dispatch:
+
 jobs:
   approve:
-    if: github.event.pull_request.user.login == 'ryo-arima'
+    if: |
+      github.event.pull_request.user.login == 'ryo-arima'
+      && secrets.AUTO_APPROVE_TOKEN != ''
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
     steps:
       - name: Auto-approve PR
-        uses: hmarr/auto-approve-action@v3
-        with:
-          # Use AUTO_APPROVE_TOKEN if available, otherwise fall back to GITHUB_TOKEN
-          # Note: GITHUB_TOKEN cannot approve PRs created by the same user
-          github-token: ${{ secrets.AUTO_APPROVE_TOKEN || secrets.GITHUB_TOKEN }}
+        env:
+          GH_TOKEN: ${{ secrets.AUTO_APPROVE_TOKEN }}
+        run: |
+          gh pr review ${{ github.event.pull_request.number }} --approve --repo ${{ github.repository }}
