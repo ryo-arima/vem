@@ -33,6 +33,7 @@ jobs:
     outputs:
       version: ${{ steps.meta.outputs.version }}
       date: ${{ steps.meta.outputs.date }}
+      tag: ${{ steps.meta.outputs.tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,23 +52,29 @@ jobs:
         run: |
           cargo install cross --locked || echo "cross already installed or failed; continuing"
 
-      - name: Prepare metadata (version/date)
+      - name: Prepare metadata (version/date/tag)
         id: meta
         run: |
           set -euo pipefail
           ver=$(grep -m1 '^version\s*=\s*"' Cargo.toml | sed -E 's/.*"([^"]+)".*/\1/')
           echo "version=${ver}" >> "$GITHUB_OUTPUT"
           echo "date=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
+          # Extract git tag if available
+          tag=$(git describe --tags --exact-match 2>/dev/null || echo "${ver}")
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
 
       - name: Build and package (Linux)
         if: runner.os == 'Linux'
         env:
           TARGET: ${{ matrix.target }}
+          GIT_TAG: ${{ steps.meta.outputs.tag }}
         run: |
           bash scripts/main.sh all
 
       - name: Build and package (macOS)
         if: runner.os == 'macOS'
+        env:
+          GIT_TAG: ${{ steps.meta.outputs.tag }}
         run: |
           bash scripts/main.sh dist
           bash scripts/main.sh brew
