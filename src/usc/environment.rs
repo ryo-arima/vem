@@ -15,15 +15,13 @@ impl environment_manager_t {
 
         let repository = environment_repository_t::new(config);
 
-        Ok(Self { repository })
+        Ok(Self {
+            repository,
+        })
     }
 
     /// Create a new environment
-    pub fn create_environment(
-        &self,
-        name: &str,
-        description: Option<String>,
-    ) -> Result<environment_t, vem_error_t> {
+    pub fn create_environment(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t> {
         self.repository.create(name, description)
     }
 
@@ -39,11 +37,7 @@ impl environment_manager_t {
     }
 
     /// Update an environment's metadata
-    pub fn update_environment(
-        &self,
-        name: &str,
-        description: Option<String>,
-    ) -> Result<environment_t, vem_error_t> {
+    pub fn update_environment(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t> {
         self.repository.update(name, description)
     }
 

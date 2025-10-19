@@ -4,10 +4,10 @@
 
 edition = "2024"
 
-# Import formatting - forces vertical layout with trailing commas
+# Import formatting - keep manual formatting, only enforce trailing commas
 # Requires nightly toolchain
-imports_granularity = "Item"        # Split imports into individual items
-group_imports = "StdExternalCrate"  # Group std, external, crate imports separately
+imports_granularity = "Preserve"    # Preserve existing import structure
+group_imports = "Preserve"          # Preserve existing grouping
 
 # Use trailing commas for multi-line items
 trailing_comma = "Vertical"
@@ -17,37 +17,51 @@ tab_spaces = 4
 indent_style = "Block"
 hard_tabs = false
 
-# Line length
-max_width = 100
-use_small_heuristics = "Max"
+# Line length - set high to avoid unwanted line breaks
+max_width = 120
+use_small_heuristics = "Off"
 
 # Import and use statement layout
-reorder_imports = true
-reorder_modules = true
+reorder_imports = false
+reorder_modules = false
 
 # Newlines and spacing
 newline_style = "Unix"
 blank_lines_upper_bound = 2
 blank_lines_lower_bound = 0
 
-# Miscellaneous formatting
-merge_derives = true
-use_field_init_shorthand = true
-use_try_shorthand = true
-remove_nested_parens = true
-normalize_comments = true
-wrap_comments = true
-comment_width = 80
+# Miscellaneous formatting - disable aggressive reformatting
+merge_derives = false
+use_field_init_shorthand = false
+use_try_shorthand = false
+remove_nested_parens = false
+normalize_comments = false
+wrap_comments = false
 
 # Control flow and match
 match_block_trailing_comma = true
-overflow_delimited_expr = true
+overflow_delimited_expr = false
 
 # Space handling
 space_before_colon = false
 space_after_colon = true
 spaces_around_ranges = false
 binop_separator = "Front"
+
+# Formatting style
+format_code_in_doc_comments = false
+format_macro_matchers = false
+format_macro_bodies = true
+format_strings = false
+
+# Chain formatting - keep existing style
+chain_width = 120
+single_line_if_else_max_width = 100
+fn_call_width = 120
+struct_lit_width = 120
+struct_variant_width = 120
+array_width = 120
+attr_fn_like_width = 120
 
 # Struct and enum formatting
 struct_lit_single_line = false

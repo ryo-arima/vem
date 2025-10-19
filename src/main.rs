@@ -38,7 +38,11 @@ mod util {
 
 use anyhow::Result;
 use ctl::base::run_cli;
-use util::mcode::{format_message, log_level_t::{DEBUG, ERROR}, VSS1, VSE1, VSE2};
+use util::mcode::{
+    format_message,
+    log_level_t::{DEBUG, ERROR},
+    VSS1, VSE1, VSE2,
+};
 
 fn main() -> Result<()> {
     // Application start
@@ -54,10 +58,10 @@ fn main() -> Result<()> {
             if std::env::var("RUST_LOG").is_ok() {
                 eprintln!("{}", format_message(DEBUG, VSE1, ""));
             }
-        }
+        },
         Err(e) => {
             eprintln!("{}", format_message(ERROR, VSE2, &e.to_string()));
-        }
+        },
     }
 
     result

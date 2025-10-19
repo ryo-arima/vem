@@ -46,9 +46,9 @@ impl log_level_t {
 // VEM_CONFIG_LOAD - Config loading operations
 struct vem_config_load;
 impl vem_config_load {
-    const VCL1: &'static str = "Config load success"; 
-    const VCL2: &'static str = "Config load failed"; 
-    const VCL3: &'static str = "Config parse error"; 
+    const VCL1: &'static str = "Config load success";
+    const VCL2: &'static str = "Config load failed";
+    const VCL3: &'static str = "Config parse error";
 }
 pub const VCL1: &str = vem_config_load::VCL1;
 pub const VCL2: &str = vem_config_load::VCL2;
@@ -57,8 +57,8 @@ pub const VCL3: &str = vem_config_load::VCL3;
 // VEM_CONFIG_SAVE - Config saving operations
 struct vem_config_save;
 impl vem_config_save {
-    const VCS1: &'static str = "Config save success"; 
-    const VCS2: &'static str = "Config save failed"; 
+    const VCS1: &'static str = "Config save success";
+    const VCS2: &'static str = "Config save failed";
     const VCS3: &'static str = "Config serialize error";
 }
 pub const VCS1: &str = vem_config_save::VCS1;
@@ -122,8 +122,8 @@ pub const VEU2: &str = vem_env_update::VEU2;
 // VEM_ENV_DELETE - Environment deletion
 struct vem_env_delete;
 impl vem_env_delete {
-    const VED1: &'static str = "Environment delete success"; 
-    const VED2: &'static str = "Environment delete failed"; 
+    const VED1: &'static str = "Environment delete success";
+    const VED2: &'static str = "Environment delete failed";
     const VED3: &'static str = "Cannot delete active environment";
 }
 pub const VED1: &str = vem_env_delete::VED1;
