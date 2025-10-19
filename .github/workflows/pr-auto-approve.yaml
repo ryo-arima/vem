@@ -10,9 +10,7 @@ on:
 
 jobs:
   approve:
-    if: |
-      github.event.pull_request.user.login == 'ryo-arima'
-      && secrets.AUTO_APPROVE_TOKEN != ''
+    if: github.event.pull_request.user.login == 'ryo-arima'
     runs-on: ubuntu-latest
     permissions:
       contents: read
