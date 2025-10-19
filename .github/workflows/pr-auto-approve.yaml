@@ -9,10 +9,16 @@ on:
 jobs:
   approve:
     if: |
-      github.event.pull_request.user.login == github.repository_owner
+      github.event.pull_request.user.login == 'ryo-arima'
       && ! github.event.pull_request.draft
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: write
     steps:
-      - uses: hmarr/auto-approve-action@v3
+      - name: Auto-approve PR
+        uses: hmarr/auto-approve-action@v3
+        with:
+          # Use a dedicated PAT stored in repository secrets so the approval
+          # is performed by a bot account (not github-actions[bot] / the PR author).
+          github-token: ${{ secrets.AUTO_APPROVE_TOKEN }}
