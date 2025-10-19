@@ -1,6 +1,6 @@
 Name:           __NAME__
 Version:        __VERSION__
-Release:        1%{?dist}
+Release:        __RELEASE__%{?dist}
 Summary:        VEM (Vim Environment Manager)
 
 License:        MIT

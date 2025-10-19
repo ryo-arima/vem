@@ -12,7 +12,7 @@ require_tools() {
 
 main() {
   require_tools
-  local root name version tag arch dist bin topdir specdir buildroot spec rpm spec_template
+  local root name version tag arch dist bin topdir specdir buildroot spec rpm spec_template release
   root="$(project_root)"
   name="$(project_name)"
   version="$(project_version)"
@@ -20,7 +20,12 @@ main() {
   arch="$(arch_rpm)"
   dist="$(ensure_dist)"
   bin="$(ensure_release_build)"
-  # Try to get homepage/license from Cargo.toml (best effort)
+  # Extract datetime from tag (format: version-datetime)
+  release="${tag#*-}"
+  # If tag doesn't contain '-', use '1' as release
+  if [[ "$release" == "$tag" ]]; then
+    release="1"
+  fi
 
   topdir="$(mktemp -d)"
   mkdir -p "$topdir/BUILD" "$topdir/RPMS" "$topdir/SOURCES" "$topdir/SPECS" "$topdir/SRPMS"
@@ -32,10 +37,11 @@ main() {
   spec_template="$SCRIPT_DIR/spec.template.spec"
   spec="$specdir/${name}.spec"
   cp "$spec_template" "$spec"
-  # Use tag for version if available
+  # Use version for Version field, datetime for Release field
   sed_inplace \
     -e "s/__NAME__/${name}/g" \
-    -e "s/__VERSION__/${tag}/g" \
+    -e "s/__VERSION__/${version}/g" \
+    -e "s/__RELEASE__/${release}/g" \
     -e "s/__ARCH__/${arch}/g" \
     "$spec"
 
