@@ -6,6 +6,13 @@ on:
       - reopened
       - synchronize
       - ready_for_review
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+  workflow_dispatch:
 jobs:
   approve:
     if: github.event.pull_request.user.login == 'ryo-arima'
