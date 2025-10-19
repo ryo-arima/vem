@@ -3,6 +3,7 @@
  * Naming convention: VEM_FUNCTION_NUMBER (uppercase)
  * Used for all log output and error messages
  */
+#![allow(dead_code)]
 
 /*
  * Log level for message output
