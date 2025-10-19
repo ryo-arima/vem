@@ -12,10 +12,11 @@ require_tools() {
 
 main() {
   require_tools
-  local root name version arch dist bin topdir specdir buildroot spec rpm spec_template
+  local root name version tag arch dist bin topdir specdir buildroot spec rpm spec_template
   root="$(project_root)"
   name="$(project_name)"
   version="$(project_version)"
+  tag="$(project_tag)"
   arch="$(arch_rpm)"
   dist="$(ensure_dist)"
   bin="$(ensure_release_build)"
@@ -31,9 +32,10 @@ main() {
   spec_template="$SCRIPT_DIR/spec.template.spec"
   spec="$specdir/${name}.spec"
   cp "$spec_template" "$spec"
+  # Use tag for version if available
   sed_inplace \
     -e "s/__NAME__/${name}/g" \
-    -e "s/__VERSION__/${version}/g" \
+    -e "s/__VERSION__/${tag}/g" \
     -e "s/__ARCH__/${arch}/g" \
     "$spec"
 

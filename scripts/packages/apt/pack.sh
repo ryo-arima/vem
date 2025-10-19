@@ -12,10 +12,11 @@ require_tools() {
 
 main() {
   require_tools
-  local root name version arch dist bin pkgdir ctlfile deb maintainer tmpl
+  local root name version tag arch dist bin pkgdir ctlfile deb maintainer tmpl
   root="$(project_root)"
   name="$(project_name)"
   version="$(project_version)"
+  tag="$(project_tag)"
   arch="$(arch_deb)"
   dist="$(ensure_dist)"
   bin="$(ensure_release_build)"
@@ -37,7 +38,7 @@ main() {
   # Ensure control file ends with a newline (dpkg-deb requires it)
   tail -c1 "$ctlfile" | read -r _ || echo >> "$ctlfile"
 
-  deb="$dist/${name}_${version}_${arch}.deb"
+  deb="$dist/${name}_${tag}_${arch}.deb"
   fakeroot dpkg-deb --build "$pkgdir" "$deb"
   rm -rf "$pkgdir"
   echo "Built deb package: $deb"

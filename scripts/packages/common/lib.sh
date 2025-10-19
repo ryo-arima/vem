@@ -18,11 +18,25 @@ project_root() {
   exit 1
 }
 
-# Extract version from Cargo.toml [package]
+# Extract project version from Cargo.toml
 project_version() {
   local root
   root="$(project_root)"
-  awk -F '"' '/^[[:space:]]*version[[:space:]]*=[[:space:]]*"/ {print $2; exit}' "$root/Cargo.toml"
+  grep -m1 '^version = ' "$root/Cargo.toml" | sed -n 's/^version = "\(.*\)"/\1/p' | tr -d '\n'
+}
+
+# Extract git tag (falls back to version if no tag)
+project_tag() {
+  if [[ -n "${GIT_TAG:-}" ]]; then
+    echo "$GIT_TAG"
+  else
+    # Fallback: try git describe or use version
+    if git describe --tags --exact-match 2>/dev/null; then
+      git describe --tags --exact-match
+    else
+      project_version
+    fi
+  fi
 }
 
 # Binary name (assumed to match package name)
@@ -119,12 +133,13 @@ ensure_dist() {
 
 # Create a tar.gz archive with the compiled binary and basic docs
 make_dist_tarball() {
-  local root name version arch out tmp bin
+  local root name version tag arch out tmp bin
   root="$(project_root)"
   name="$(project_name)"
   version="$(project_version)"
+  tag="$(project_tag)"
   arch="$(arch_generic)"
-  out="$(ensure_dist)/${name}-${version}-${arch}.tar.gz"
+  out="$(ensure_dist)/${name}-${tag}-${arch}.tar.gz"
   tmp="$(mktemp -d)"
   bin="$(ensure_release_build)"
   mkdir -p "$tmp/$name"
@@ -138,12 +153,13 @@ make_dist_tarball() {
 
 # Create a zip archive with the compiled binary and basic docs
 make_dist_zip() {
-  local root name version arch out tmp bin
+  local root name version tag arch out tmp bin
   root="$(project_root)"
   name="$(project_name)"
   version="$(project_version)"
+  tag="$(project_tag)"
   arch="$(arch_generic)"
-  out="$(ensure_dist)/${name}-${version}-${arch}.zip"
+  out="$(ensure_dist)/${name}-${tag}-${arch}.zip"
   tmp="$(mktemp -d)"
   bin="$(ensure_release_build)"
   mkdir -p "$tmp/$name"

@@ -20,10 +20,11 @@ to_camel() {
 }
 
 main() {
-  local root name version tarball sha dist formula_dir formula
+  local root name version tag tarball sha dist formula_dir formula
   root="$(project_root)"
   name="$(project_name)"
   version="$(project_version)"
+  tag="$(project_tag)"
   dist="$(ensure_dist)"
 
   tarball="$(make_dist_tarball)"
@@ -68,7 +69,7 @@ RUBY
 
   sed_inplace \
     -e "s/__CLASS_NAME__/${class_name}/" \
-    -e "s/__VERSION__/${version}/" \
+    -e "s/__VERSION__/${tag}/" \
     -e "s|__URL__|${url}|g" \
     -e "s/__SHA__/${sha}/" \
     -e "s/__BINARY_NAME__/${name}/" \
