@@ -19,6 +19,6 @@ jobs:
       - name: Auto-approve PR
         uses: hmarr/auto-approve-action@v3
         with:
-          # Use a dedicated PAT stored in repository secrets so the approval
-          # is performed by a bot account (not github-actions[bot] / the PR author).
-          github-token: ${{ secrets.AUTO_APPROVE_TOKEN }}
+          # Use AUTO_APPROVE_TOKEN if available, otherwise fall back to GITHUB_TOKEN
+          # Note: GITHUB_TOKEN cannot approve PRs created by the same user
+          github-token: ${{ secrets.AUTO_APPROVE_TOKEN || secrets.GITHUB_TOKEN }}
