@@ -1,7 +1,11 @@
-use crate::cnf::application::app_config_t;
-use crate::ent::model::environment::{environment_meta_t, environment_t};
-use crate::util::error::vem_error_t;
 use std::fs;
+
+use crate::cnf::application::app_config_t;
+use crate::util::error::vem_error_t;
+use crate::ent::model::environment::{
+    environment_meta_t,
+    environment_t,
+};
 
 /// Repository for managing environment data
 pub struct environment_repository_t {

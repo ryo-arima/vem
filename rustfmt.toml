@@ -1,7 +1,54 @@
-max_width = 100
-hard_tabs = false
-tab_spaces = 4
-newline_style = "Unix"
+# Rustfmt configuration for VEM project
+# Follows C(K&R) style conventions with vertical import formatting
+# Note: Some features require nightly toolchain (cargo +nightly fmt)
+
 edition = "2024"
+
+# Import formatting - forces vertical layout with trailing commas
+# Requires nightly toolchain
+imports_granularity = "Item"        # Split imports into individual items
+group_imports = "StdExternalCrate"  # Group std, external, crate imports separately
+
+# Use trailing commas for multi-line items
+trailing_comma = "Vertical"
+
+# Indentation
+tab_spaces = 4
+indent_style = "Block"
+hard_tabs = false
+
+# Line length
+max_width = 100
+use_small_heuristics = "Max"
+
+# Import and use statement layout
 reorder_imports = true
+reorder_modules = true
+
+# Newlines and spacing
+newline_style = "Unix"
+blank_lines_upper_bound = 2
+blank_lines_lower_bound = 0
+
+# Miscellaneous formatting
 merge_derives = true
+use_field_init_shorthand = true
+use_try_shorthand = true
+remove_nested_parens = true
+normalize_comments = true
+wrap_comments = true
+comment_width = 80
+
+# Control flow and match
+match_block_trailing_comma = true
+overflow_delimited_expr = true
+
+# Space handling
+space_before_colon = false
+space_after_colon = true
+spaces_around_ranges = false
+binop_separator = "Front"
+
+# Struct and enum formatting
+struct_lit_single_line = false
+enum_discrim_align_threshold = 0

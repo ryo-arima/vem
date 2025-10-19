@@ -1,6 +1,26 @@
 use crate::usc::environment::environment_manager_t;
+use crate::util::mcode::{
+    format_message,
+    log_level_t::{
+        INFO,
+        NOTICE,
+        WARN
+    },
+    VCC_CONFIRM, VCC_CANCEL,
+    VEC1,
+    VEL1,
+    VEL3,
+    VES1,
+    VECU1,
+    VECU2,
+    VEU1, 
+    VED1,
+};
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::{
+    Parser,
+    Subcommand
+};
 
 /// Available VEM commands
 #[derive(Subcommand)]
@@ -72,13 +92,14 @@ pub fn handle_command(command: Commands) -> Result<()> {
     match command {
         Commands::Create { name, description } => {
             env_manager.create_environment(&name, description)?;
-            println!("Environment '{}' created successfully", name);
+            println!("{}", format_message(INFO, VEC1, &format!("Environment '{}'", name)));
         }
         Commands::List { verbose } => {
             let environments = env_manager.list_environments()?;
             if environments.is_empty() {
-                println!("No environments found");
+                println!("{}", format_message(NOTICE, VEL3, ""));
             } else {
+                println!("{}", format_message(INFO, VEL1, ""));
                 for env in environments {
                     if verbose {
                         println!("{} ({})", env.name(), env.path().display());
@@ -90,21 +111,28 @@ pub fn handle_command(command: Commands) -> Result<()> {
         }
         Commands::Switch { name } => {
             env_manager.switch_environment(&name)?;
-            println!("Switched to environment '{}'", name);
+            println!("{}", format_message(INFO, VES1, &format!("Environment '{}'", name)));
         }
         Commands::Current => match env_manager.get_current_environment() {
-            Ok(env) => println!("{}", env.name()),
-            Err(_) => println!("No environment currently active"),
+            Ok(env) => {
+                println!(
+                    "{}",
+                    format_message(INFO, VECU1, &format!("Current: {}", env.name()))
+                );
+            }
+            Err(_) => {
+                println!("{}", format_message(NOTICE, VECU2, ""));
+            }
         },
         Commands::Update { name, description } => {
             env_manager.update_environment(&name, description)?;
-            println!("Environment '{}' updated successfully", name);
+            println!("{}", format_message(INFO, VEU1, &format!("Environment '{}'", name)));
         }
         Commands::Remove { name, force } => {
             if !force {
                 print!(
-                    "Are you sure you want to remove environment '{}'? (y/N): ",
-                    name
+                    "{} ",
+                    format_message(WARN, VCC_CONFIRM, &format!("Remove environment '{}'? (y/N):", name))
                 );
                 use std::io::{self, Write};
                 io::stdout().flush()?;
@@ -114,13 +142,13 @@ pub fn handle_command(command: Commands) -> Result<()> {
                 let first_non_ws = input.chars().find(|c| !c.is_whitespace());
                 let yes = matches!(first_non_ws, Some('y') | Some('Y'));
                 if !yes {
-                    println!("Operation cancelled");
+                    println!("{}", format_message(NOTICE, VCC_CANCEL, ""));
                     return Ok(());
                 }
             }
 
             env_manager.remove_environment(&name)?;
-            println!("Environment '{}' removed successfully", name);
+            println!("{}", format_message(INFO, VED1, &format!("Environment '{}'", name)));
         }
     }
 
