@@ -24,25 +24,25 @@ impl fmt::Display for vem_error_t {
         match self {
             vem_error_t::EnvironmentNotFound(name) => {
                 write!(f, "Environment '{}' not found", name)
-            }
+            },
             vem_error_t::EnvironmentAlreadyExists(name) => {
                 write!(f, "Environment '{}' already exists", name)
-            }
+            },
             vem_error_t::InvalidEnvironmentName(name) => {
                 write!(f, "Invalid environment name: '{}'", name)
-            }
+            },
             vem_error_t::FileSystemError(err) => {
                 write!(f, "File system error: {}", err)
-            }
+            },
             vem_error_t::ConfigurationError(msg) => {
                 write!(f, "Configuration error: {}", msg)
-            }
+            },
             vem_error_t::SerializationError(err) => {
                 write!(f, "Serialization error: {}", err)
-            }
+            },
             vem_error_t::NoCurrentEnvironment => {
                 write!(f, "No current environment is set")
-            }
+            },
         }
     }
 }

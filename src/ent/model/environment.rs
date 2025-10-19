@@ -1,5 +1,11 @@
-use serde::{Deserialize, Serialize};
-use std::path::{Path, PathBuf};
+use serde::{
+    Deserialize,
+    Serialize
+};
+use std::path::{
+    Path,
+    PathBuf
+};
 
 /// Environment metadata stored in meta.toml
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -1,7 +1,8 @@
-use crate::cnf::application::app_config_t;
-use crate::ent::model::environment::{environment_meta_t, environment_t};
-use crate::util::error::vem_error_t;
 use std::fs;
+
+use crate::cnf::application::app_config_t;
+use crate::util::error::vem_error_t;
+use crate::ent::model::environment::{environment_meta_t, environment_t};
 
 /// Repository for managing environment data
 pub struct environment_repository_t {
@@ -10,15 +11,13 @@ pub struct environment_repository_t {
 
 impl environment_repository_t {
     pub fn new(config: app_config_t) -> Self {
-        Self { config }
+        Self {
+            config,
+        }
     }
 
     /// Create a new environment
-    pub fn create(
-        &self,
-        name: &str,
-        description: Option<String>,
-    ) -> Result<environment_t, vem_error_t> {
+    pub fn create(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t> {
         // Validate environment name
         if !environment_t::is_valid_name(name) {
             return Err(vem_error_t::InvalidEnvironmentName(name.to_string()));
@@ -98,11 +97,7 @@ impl environment_repository_t {
     }
 
     /// Update an environment's metadata
-    pub fn update(
-        &self,
-        name: &str,
-        description: Option<String>,
-    ) -> Result<environment_t, vem_error_t> {
+    pub fn update(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t> {
         let mut env = self.get(name)?;
         env.meta_mut().set_description(description);
         self.save_metadata(&env)?;
@@ -178,9 +173,8 @@ impl environment_repository_t {
     /// Save environment metadata to meta.toml
     fn save_metadata(&self, env: &environment_t) -> Result<(), vem_error_t> {
         let meta_path = env.meta_path();
-        let content = toml::to_string_pretty(env.meta()).map_err(|e| {
-            vem_error_t::SerializationError(format!("Failed to serialize metadata: {}", e))
-        })?;
+        let content = toml::to_string_pretty(env.meta())
+            .map_err(|e| vem_error_t::SerializationError(format!("Failed to serialize metadata: {}", e)))?;
         fs::write(&meta_path, content)?;
         Ok(())
     }
@@ -195,9 +189,8 @@ impl environment_repository_t {
         }
 
         let content = fs::read_to_string(&meta_path)?;
-        let meta: environment_meta_t = toml::from_str(&content).map_err(|e| {
-            vem_error_t::SerializationError(format!("Failed to parse metadata: {}", e))
-        })?;
+        let meta: environment_meta_t = toml::from_str(&content)
+            .map_err(|e| vem_error_t::SerializationError(format!("Failed to parse metadata: {}", e)))?;
         Ok(meta)
     }
 }
