@@ -17,6 +17,7 @@
  * DEBUG: Debug-level messages
  */
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum log_level_t {
     EMERG,
     ALERT,
