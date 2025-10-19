@@ -6,7 +6,8 @@ use crate::util::mcode::{
         NOTICE,
         WARN
     },
-    VCC_CONFIRM, VCC_CANCEL,
+    VCC_CONFIRM,
+    VCC_CANCEL,
     VEC1,
     VEL1,
     VEL3,
