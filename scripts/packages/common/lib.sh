@@ -25,22 +25,12 @@ project_version() {
   grep -m1 '^version = ' "$root/Cargo.toml" | sed -n 's/^version = "\(.*\)"/\1/p' | tr -d '\n'
 }
 
-# Extract git tag (includes date if no exact tag)
+# Extract git tag (always returns version-datetime format)
 project_tag() {
-  if [[ -n "${GIT_TAG:-}" ]]; then
-    echo "$GIT_TAG"
-  else
-    # Fallback: try git describe or use version+date
-    if git describe --tags --exact-match 2>/dev/null; then
-      git describe --tags --exact-match
-    else
-      # Use version-YYYYMMDDHHmm format
-      local version date
-      version="$(project_version)"
-      date="$(date -u +%Y%m%d%H%M)"
-      echo "${version}-${date}"
-    fi
-  fi
+  local version date
+  version="$(project_version)"
+  date="$(date -u +%Y%m%d%H%M)"
+  echo "${version}-${date}"
 }
 
 # Binary name (assumed to match package name)
