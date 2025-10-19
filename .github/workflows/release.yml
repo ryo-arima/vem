@@ -8,9 +8,6 @@ on:
 permissions:
   contents: write
 
-permissions:
-  contents: write
-
 jobs:
   package:
     name: Build and Package (${{ matrix.runner }} | ${{ matrix.target }})
@@ -38,7 +35,6 @@ jobs:
       date: ${{ steps.meta.outputs.date }}
       tag: ${{ steps.meta.outputs.tag }}
     steps:
-<<<<<<< Updated upstream
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -122,36 +118,3 @@ jobs:
           VERSION: ${{ steps.meta.outputs.version }}
           DATE: ${{ steps.meta.outputs.date }}
         run: bash scripts/packages/release/publish_releases.sh
-=======
-    - uses: actions/checkout@v4
-    
-    - name: Install Rust
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        targets: ${{ matrix.target }}
-    
-    - name: Build
-      run: cargo build --release --target ${{ matrix.target }}
-    
-    - name: Prepare asset (Unix)
-      if: runner.os != 'Windows'
-      run: |
-        cp target/${{ matrix.target }}/release/vem ${{ matrix.asset_name }}
-        chmod +x ${{ matrix.asset_name }}
-    
-    - name: Prepare asset (Windows)
-      if: runner.os == 'Windows'
-      shell: bash
-      run: |
-        cp "target/${{ matrix.target }}/release/vem.exe" "${{ matrix.asset_name }}"
-    
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: ./${{ matrix.asset_name }}
-        asset_name: ${{ matrix.asset_name }}
-        asset_content_type: application/octet-stream
->>>>>>> Stashed changes
