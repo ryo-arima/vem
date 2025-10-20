@@ -20,6 +20,74 @@ VEM is a command-line tool written in Rust for efficiently managing multiple Vim
 
 ## Installation
 
+### From Pre-built Packages
+
+Download the latest release from [GitHub Releases](https://github.com/ryo-arima/vem/releases).
+
+Package names follow the format: `vem-<version>-<datetime>-<arch>.<ext>`
+- Example: `vem-0.1.0-202510200900-amd64.deb`
+- Datetime is in UTC format (YYYYMMDDHHmm)
+
+**Note:** Replace the package names below with the actual latest version from the [Releases page](https://github.com/ryo-arima/vem/releases/latest).
+
+#### Debian/Ubuntu (deb)
+
+```bash
+# Check the latest release and download the appropriate package for your architecture
+# For amd64:
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem_0.1.0-202510200900_amd64.deb
+sudo dpkg -i vem_0.1.0-202510200900_amd64.deb
+
+# For arm64:
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem_0.1.0-202510200900_arm64.deb
+sudo dpkg -i vem_0.1.0-202510200900_arm64.deb
+```
+
+#### Red Hat/Fedora/CentOS (rpm)
+
+```bash
+# Check the latest release and download the appropriate package for your architecture
+# For x86_64:
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900.x86_64.rpm
+sudo rpm -i vem-0.1.0-202510200900.x86_64.rpm
+
+# For aarch64:
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900.aarch64.rpm
+sudo rpm -i vem-0.1.0-202510200900.aarch64.rpm
+```
+
+#### macOS (Homebrew)
+
+```bash
+# Download the Homebrew formula from the release
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem.rb
+brew install ./vem.rb
+```
+
+#### Binary Archives (tar.gz/zip)
+
+```bash
+# Linux x86_64
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900-x86_64.tar.gz
+tar -xzf vem-0.1.0-202510200900-x86_64.tar.gz
+sudo mv vem/vem /usr/local/bin/
+
+# Linux aarch64
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900-aarch64.tar.gz
+tar -xzf vem-0.1.0-202510200900-aarch64.tar.gz
+sudo mv vem/vem /usr/local/bin/
+
+# macOS x86_64 (Intel)
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900-x86_64.tar.gz
+tar -xzf vem-0.1.0-202510200900-x86_64.tar.gz
+sudo mv vem/vem /usr/local/bin/
+
+# macOS arm64 (Apple Silicon)
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900-arm64.tar.gz
+tar -xzf vem-0.1.0-202510200900-arm64.tar.gz
+sudo mv vem/vem /usr/local/bin/
+```
+
 ### Using Cargo
 
 ```bash
@@ -32,6 +100,7 @@ cargo install vem
 git clone https://github.com/ryo-arima/vem.git
 cd vem
 cargo build --release
+sudo cp target/release/vem /usr/local/bin/
 ```
 
 ## Usage
@@ -127,7 +196,7 @@ This layered architecture ensures:
 
 ### Prerequisites
 
-- Rust 1.70 or higher
+- Rust 1.70 or higher (nightly toolchain recommended for development)
 - Git
 
 ### Project Structure
@@ -138,15 +207,26 @@ vem/
 │   ├── src/            # Documentation source
 │   ├── book.toml       # mdBook configuration
 │   └── book/           # Generated documentation (ignored)
+├── scripts/             # Packaging and release scripts
+│   ├── main.sh         # Main packaging script entry point
+│   └── packages/       # Package format specific scripts
+│       ├── apt/        # Debian package scripts
+│       ├── rpm/        # RPM package scripts
+│       ├── brew/       # Homebrew formula scripts
+│       └── common/     # Shared utilities
 ├── src/                 # Source code
 │   ├── cnf/            # Configuration layer
 │   ├── ctl/            # Control layer
 │   ├── ent/            # Entity layer
 │   ├── rep/            # Repository layer
 │   ├── usc/            # Use case layer
+│   ├── util/           # Utility modules
 │   └── main.rs         # Entry point
+├── .github/             # GitHub Actions workflows
+│   └── workflows/      # CI/CD pipelines
 ├── Cargo.toml          # Project configuration
 ├── Cargo.lock          # Dependency lock file
+├── rustfmt.toml        # Rust formatter configuration
 └── README.md           # Project documentation
 ```
 
@@ -162,6 +242,36 @@ cargo build
 
 ```bash
 cargo test
+```
+
+### Code Formatting
+
+This project uses nightly rustfmt with custom configurations:
+
+```bash
+# Install nightly toolchain
+rustup toolchain install nightly
+
+# Format code
+cargo +nightly fmt
+
+# Check formatting
+cargo +nightly fmt --check
+```
+
+### Building Packages
+
+To build distribution packages locally:
+
+```bash
+# Build all packages (Linux only)
+bash scripts/main.sh all
+
+# Build specific package types
+bash scripts/main.sh apt    # Debian packages
+bash scripts/main.sh rpm    # RPM packages
+bash scripts/main.sh dist   # tar.gz and zip archives
+bash scripts/main.sh brew   # Homebrew formula
 ```
 
 ## License
