@@ -24,9 +24,9 @@ VEM is a command-line tool written in Rust for efficiently managing multiple Vim
 
 Download the latest release from [GitHub Releases](https://github.com/ryo-arima/vem/releases).
 
-Package names follow the format: `vem-<version>-<datetime>-<arch>.<ext>`
-- Example: `vem-0.1.0-202510200900-amd64.deb`
-- Datetime is in UTC format (YYYYMMDDHHmm)
+Package names follow the format: `vem-<version>-<date>-<arch>.<ext>`
+- Example: `vem-0.1.0-20251020-amd64.deb`
+- Date is in UTC format (YYYYMMDD)
 
 **Note:** Replace the package names below with the actual latest version from the [Releases page](https://github.com/ryo-arima/vem/releases/latest).
 
@@ -35,12 +35,12 @@ Package names follow the format: `vem-<version>-<datetime>-<arch>.<ext>`
 ```bash
 # Check the latest release and download the appropriate package for your architecture
 # For amd64:
-wget https://github.com/ryo-arima/vem/releases/download/latest/vem_0.1.0-202510200900_amd64.deb
-sudo dpkg -i vem_0.1.0-202510200900_amd64.deb
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem_0.1.0-20251020_amd64.deb
+sudo dpkg -i vem_0.1.0-20251020_amd64.deb
 
 # For arm64:
-wget https://github.com/ryo-arima/vem/releases/download/latest/vem_0.1.0-202510200900_arm64.deb
-sudo dpkg -i vem_0.1.0-202510200900_arm64.deb
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem_0.1.0-20251020_arm64.deb
+sudo dpkg -i vem_0.1.0-20251020_arm64.deb
 ```
 
 #### Red Hat/Fedora/CentOS (rpm)
@@ -48,12 +48,12 @@ sudo dpkg -i vem_0.1.0-202510200900_arm64.deb
 ```bash
 # Check the latest release and download the appropriate package for your architecture
 # For x86_64:
-wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900.x86_64.rpm
-sudo rpm -i vem-0.1.0-202510200900.x86_64.rpm
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-20251020.x86_64.rpm
+sudo rpm -i vem-0.1.0-20251020.x86_64.rpm
 
 # For aarch64:
-wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900.aarch64.rpm
-sudo rpm -i vem-0.1.0-202510200900.aarch64.rpm
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-20251020.aarch64.rpm
+sudo rpm -i vem-0.1.0-20251020.aarch64.rpm
 ```
 
 #### macOS (Homebrew)
@@ -68,23 +68,23 @@ brew install ./vem.rb
 
 ```bash
 # Linux x86_64
-wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900-x86_64.tar.gz
-tar -xzf vem-0.1.0-202510200900-x86_64.tar.gz
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-20251020-x86_64.tar.gz
+tar -xzf vem-0.1.0-20251020-x86_64.tar.gz
 sudo mv vem/vem /usr/local/bin/
 
 # Linux aarch64
-wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900-aarch64.tar.gz
-tar -xzf vem-0.1.0-202510200900-aarch64.tar.gz
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-20251020-aarch64.tar.gz
+tar -xzf vem-0.1.0-20251020-aarch64.tar.gz
 sudo mv vem/vem /usr/local/bin/
 
 # macOS x86_64 (Intel)
-wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900-x86_64.tar.gz
-tar -xzf vem-0.1.0-202510200900-x86_64.tar.gz
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-20251020-x86_64.tar.gz
+tar -xzf vem-0.1.0-20251020-x86_64.tar.gz
 sudo mv vem/vem /usr/local/bin/
 
 # macOS arm64 (Apple Silicon)
-wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-202510200900-arm64.tar.gz
-tar -xzf vem-0.1.0-202510200900-arm64.tar.gz
+wget https://github.com/ryo-arima/vem/releases/download/latest/vem-0.1.0-20251020-arm64.tar.gz
+tar -xzf vem-0.1.0-20251020-arm64.tar.gz
 sudo mv vem/vem /usr/local/bin/
 ```
 

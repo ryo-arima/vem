@@ -25,11 +25,11 @@ project_version() {
   grep -m1 '^version = ' "$root/Cargo.toml" | sed -n 's/^version = "\(.*\)"/\1/p' | tr -d '\n'
 }
 
-# Extract git tag (always returns version-datetime format)
+# Extract git tag (always returns version-date format)
 project_tag() {
   local version date
   version="$(project_version)"
-  date="$(date -u +%Y%m%d%H%M)"
+  date="$(date -u +%Y%m%d)"
   echo "${version}-${date}"
 }
 

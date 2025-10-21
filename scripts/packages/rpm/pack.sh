@@ -20,7 +20,7 @@ main() {
   arch="$(arch_rpm)"
   dist="$(ensure_dist)"
   bin="$(ensure_release_build)"
-  # Extract datetime from tag (format: version-datetime)
+  # Extract date from tag (format: version-date)
   release="${tag#*-}"
   # If tag doesn't contain '-', use '1' as release
   if [[ "$release" == "$tag" ]]; then
