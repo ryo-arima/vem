@@ -7,4 +7,3 @@ fn main() {
     // Build CLI and parse (discard result for now to avoid unused warnings)
     let _matches = base_cmd.execute().get_matches();
 }
-
