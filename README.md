@@ -1,5 +1,11 @@
 # VEM (Vim Environment Manager)
 
+> [!WARNING]
+> **🚧 UNDER DEVELOPMENT 🚧**
+> 
+> This project is currently in active development and is not yet ready for production use.
+> Features, APIs, and commands may change without notice.
+
 VEM is a command-line tool written in Rust for efficiently managing multiple Vim environments. Switch between different `.vim` configurations easily based on your needs and preferences.
 
 ## Features

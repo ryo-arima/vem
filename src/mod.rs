@@ -2,7 +2,7 @@
 
 pub mod cnf {
 	// application config module
-	#[path = "cnf/application.rs"]
+	#[path = "application.rs"]
 	pub mod application;
 
 	// Re-exports and backward-compatible aliases
@@ -25,17 +25,14 @@ pub mod ent {
 		pub mod environment;
 	}
 	
-	// error handling
-	pub mod error;
-	
 	// Re-export commonly used types
-	pub use error::vem_error_t;
+	pub use crate::util::error::vem_error_t;
 	pub use model::environment::{environment_meta_t, environment_t};
 }
 
 pub mod rep {
 	// repositories
-	#[path = "rep/environment.rs"]
+	#[path = "environment.rs"]
 	pub mod environment;
 
 	// Re-exports and aliases to keep external API stable
@@ -45,13 +42,26 @@ pub mod rep {
 
 pub mod usc {
 	// use-case layer
-	#[path = "usc/environment.rs"]
+	#[path = "environment.rs"]
 	pub mod environment;
 
 	// Re-exports and aliases
 	pub use environment::environment_manager_t;
-	pub type EnvironmentManager = environment_manager_t;
+	// Note: EnvironmentManager is generic, use environment_manager_t<R> directly
 }
 
-// CLI module (single file)
-pub mod ctl;
+pub mod ctl {
+	#[path = "environment.rs"]
+	pub mod environment;
+}
+
+pub mod util {
+	#[path = "error.rs"]
+	pub mod error;
+	
+	#[path = "mcode.rs"]
+	pub mod mcode;
+
+	#[path = "logger.rs"]
+	pub mod logger;
+}

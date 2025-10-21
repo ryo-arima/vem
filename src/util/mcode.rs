@@ -4,6 +4,7 @@
  * Used for all log output and error messages
  */
 #![allow(dead_code)]
+#![allow(non_camel_case_types)]
 
 /*
  * Log level for message output

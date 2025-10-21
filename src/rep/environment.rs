@@ -1,8 +1,23 @@
+#![allow(non_camel_case_types)]
+
 use std::fs;
 
 use crate::cnf::application::app_config_t;
 use crate::util::error::vem_error_t;
-use crate::ent::model::environment::{environment_meta_t, environment_t};
+use crate::ent::model::environment::{
+    environment_meta_t, environment_t
+};
+
+/// Repository interface for managing environment data
+pub trait EnvironmentRepository {
+    fn create(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t>;
+    fn list(&self) -> Result<Vec<environment_t>, vem_error_t>;
+    fn get(&self, name: &str) -> Result<environment_t, vem_error_t>;
+    fn update(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t>;
+    fn delete(&self, name: &str) -> Result<(), vem_error_t>;
+    fn get_current(&self) -> Result<environment_t, vem_error_t>;
+    fn set_current(&self, name: &str) -> Result<(), vem_error_t>;
+}
 
 /// Repository for managing environment data
 pub struct environment_repository_t {
@@ -193,4 +208,39 @@ impl environment_repository_t {
             .map_err(|e| vem_error_t::SerializationError(format!("Failed to parse metadata: {}", e)))?;
         Ok(meta)
     }
+}
+
+impl EnvironmentRepository for environment_repository_t {
+    fn create(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t> {
+        self.create(name, description)
+    }
+    
+    fn list(&self) -> Result<Vec<environment_t>, vem_error_t> {
+        self.list()
+    }
+    
+    fn get(&self, name: &str) -> Result<environment_t, vem_error_t> {
+        self.get(name)
+    }
+    
+    fn update(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t> {
+        self.update(name, description)
+    }
+    
+    fn delete(&self, name: &str) -> Result<(), vem_error_t> {
+        self.delete(name)
+    }
+    
+    fn get_current(&self) -> Result<environment_t, vem_error_t> {
+        self.get_current()
+    }
+    
+    fn set_current(&self, name: &str) -> Result<(), vem_error_t> {
+        self.set_current(name)
+    }
+}
+
+/// Factory function to create environment repository
+pub fn create_environment_repository(config: app_config_t) -> Result<impl EnvironmentRepository, vem_error_t> {
+    Ok(environment_repository_t::new(config))
 }
