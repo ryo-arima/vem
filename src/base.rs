@@ -24,101 +24,123 @@ impl BaseCmd {
         vem_cmd = vem_cmd.subcommand_required(true);
         vem_cmd = vem_cmd.arg_required_else_help(true);
 
-        // build and add subcmds
-        let SubCmds {
-            _create,
-            _list,
-            _switch,
-            _current,
-            _remove
-        }  = init_subcmds();
-        vem_cmd = vem_cmd.subcommand(_create);
-        vem_cmd = vem_cmd.subcommand(_list);
-        vem_cmd = vem_cmd.subcommand(_switch);
-        vem_cmd = vem_cmd.subcommand(_current);
-        vem_cmd = vem_cmd.subcommand(_remove);
+        vem_cmd = init_subcmds(vem_cmd);
 
         vem_cmd
     }
 }
 
-// init_* functions for each subcmd
-fn init_create_cmd() -> Command {
-    let mut cmd = Command::new("create");
-    cmd = cmd.about("Create a new Vim environment");
-    cmd = cmd.subcommand_required(true);
-    cmd = cmd.arg_required_else_help(true);
-    cmd = cmd.subcommand_help_heading("RESOURCE");
-    cmd = cmd.subcommand_value_name("RESOURCE");
+// Config used to apply common settings to subcommands
+pub struct CmdCnf {
+    pub about: &'static str,
+    pub subcommand_help_heading: &'static str,
+    pub subcommand_value_name: &'static str,
+    pub subcommand_required: bool,
+    pub arg_required_else_help: bool,
+}
 
-    // attach resource subcommand from ctl
-    let create_environment_cmd = init_create_environment_cmd();
-    cmd = cmd.subcommand(create_environment_cmd);
+fn set_cmdcnf(mut cmd: Command, cnf: &CmdCnf) -> Command {
+    cmd = cmd.about(cnf.about);
+    cmd = cmd.subcommand_required(cnf.subcommand_required);
+    cmd = cmd.arg_required_else_help(cnf.arg_required_else_help);
+    cmd = cmd.subcommand_help_heading(cnf.subcommand_help_heading);
+    cmd = cmd.subcommand_value_name(cnf.subcommand_value_name);
     cmd
+}
+
+fn init_create_cmd() -> Command {
+    let mut create_cmd = Command::new("create");
+    let create_cmdcnf = CmdCnf {
+        about: "Create a new Vim environment",
+        subcommand_help_heading: "RESOURCE",
+        subcommand_value_name: "RESOURCE",
+        subcommand_required: true,
+        arg_required_else_help: true,
+    };
+    create_cmd = set_cmdcnf(create_cmd, &create_cmdcnf);
+
+    let create_environment_cmd = init_create_environment_cmd();
+    create_cmd = create_cmd.subcommand(create_environment_cmd);
+    create_cmd
 }
 
 fn init_list_cmd() -> Command {
-    let mut cmd = Command::new("list");
-    cmd = cmd.about("List all available environments");
-    cmd = cmd.subcommand_required(true);
-    cmd = cmd.arg_required_else_help(true);
-    cmd = cmd.subcommand_help_heading("RESOURCE");
-    cmd = cmd.subcommand_value_name("RESOURCE");
+    let mut list_cmd = Command::new("list");
+    let list_cmdcnf = CmdCnf {
+        about: "List all available environments",
+        subcommand_help_heading: "RESOURCE",
+        subcommand_value_name: "RESOURCE",
+        subcommand_required: true,
+        arg_required_else_help: true,
+    };
+    list_cmd = set_cmdcnf(list_cmd, &list_cmdcnf);
 
-    // attach resource subcommand from ctl
     let list_environment_cmd = init_list_environment_cmd();
-    cmd = cmd.subcommand(list_environment_cmd);
-    cmd
+    list_cmd = list_cmd.subcommand(list_environment_cmd);
+    list_cmd
 }
 
 fn init_switch_cmd() -> Command {
-    let mut cmd = Command::new("switch");
-    cmd = cmd.about("Switch to a specific environment");
-    cmd = cmd.subcommand_required(true);
-    cmd = cmd.arg_required_else_help(true);
-    cmd = cmd.subcommand_help_heading("RESOURCE");
-    cmd = cmd.subcommand_value_name("RESOURCE");
+    let mut switch_cmd = Command::new("switch");
+    let switch_cmdcnf = CmdCnf {
+        about: "Switch to a specific environment",
+        subcommand_help_heading: "RESOURCE",
+        subcommand_value_name: "RESOURCE",
+        subcommand_required: true,
+        arg_required_else_help: true,
+    };
+    switch_cmd = set_cmdcnf(switch_cmd, &switch_cmdcnf);
 
-    // attach resource subcommand from ctl
     let switch_environment_cmd = init_switch_environment_cmd();
-    cmd = cmd.subcommand(switch_environment_cmd);
-    cmd
+    switch_cmd = switch_cmd.subcommand(switch_environment_cmd);
+    switch_cmd
 }
 
 fn init_current_cmd() -> Command {
-    let mut cmd = Command::new("current");
-    cmd = cmd.about("Show the currently active environment");
-    cmd = cmd.subcommand_required(true);
-    cmd = cmd.arg_required_else_help(true);
-    cmd = cmd.subcommand_help_heading("RESOURCE");
-    cmd = cmd.subcommand_value_name("RESOURCE");
+    let mut current_cmd = Command::new("current");
+    let current_cmdcnf = CmdCnf {
+        about: "Show the currently active environment",
+        subcommand_help_heading: "RESOURCE",
+        subcommand_value_name: "RESOURCE",
+        subcommand_required: true,
+        arg_required_else_help: true,
+    };
+    current_cmd = set_cmdcnf(current_cmd, &current_cmdcnf);
 
-    // attach resource subcommand from ctl
     let current_environment_cmd = init_current_environment_cmd();
-    cmd = cmd.subcommand(current_environment_cmd);
-    cmd
+    current_cmd = current_cmd.subcommand(current_environment_cmd);
+    current_cmd
 }
 
 fn init_remove_cmd() -> Command {
-    let mut cmd = Command::new("remove");
-    cmd = cmd.about("Remove an environment");
-    cmd = cmd.subcommand_required(true);
-    cmd = cmd.arg_required_else_help(true);
-    cmd = cmd.subcommand_help_heading("RESOURCE");
-    cmd = cmd.subcommand_value_name("RESOURCE");
+    let mut remove_cmd = Command::new("remove");
+    let remove_cmdcnf = CmdCnf {
+        about: "Remove an environment",
+        subcommand_help_heading: "RESOURCE",
+        subcommand_value_name: "RESOURCE",
+        subcommand_required: true,
+        arg_required_else_help: true,
+    };
+    remove_cmd = set_cmdcnf(remove_cmd, &remove_cmdcnf);
 
-    // attach resource subcommand from ctl
     let remove_environment_cmd = init_remove_environment_cmd();
-    cmd = cmd.subcommand(remove_environment_cmd);
-    cmd
+    remove_cmd = remove_cmd.subcommand(remove_environment_cmd);
+    remove_cmd
 }
 
-fn init_subcmds() -> SubCmds {
-    SubCmds {
+fn init_subcmds(mut cmd: Command) -> Command {
+    let subcmds = SubCmds {
         _create: init_create_cmd(),
         _list: init_list_cmd(),
         _switch: init_switch_cmd(),
         _current: init_current_cmd(),
         _remove: init_remove_cmd(),
-    }
+    };
+    
+    cmd = cmd.subcommand(subcmds._create);
+    cmd = cmd.subcommand(subcmds._list);
+    cmd = cmd.subcommand(subcmds._switch);
+    cmd = cmd.subcommand(subcmds._current);
+    cmd = cmd.subcommand(subcmds._remove);
+    cmd
 }

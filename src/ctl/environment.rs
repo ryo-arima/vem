@@ -28,7 +28,6 @@ pub fn init_create_environment_cmd() -> Command {
     env
 }
 
-/// list の配下にぶら下げる environment 用の resource コマンド
 pub fn init_list_environment_cmd() -> Command {
     let mut env = Command::new("env");
     env = env.visible_alias("environment");
@@ -46,7 +45,6 @@ pub fn init_list_environment_cmd() -> Command {
     env
 }
 
-/// switch の配下にぶら下げる environment 用の resource コマンド
 pub fn init_switch_environment_cmd() -> Command {
     let mut env = Command::new("env");
     env = env.visible_alias("environment");
@@ -63,7 +61,6 @@ pub fn init_switch_environment_cmd() -> Command {
     env
 }
 
-/// current の配下にぶら下げる environment 用の resource コマンド
 pub fn init_current_environment_cmd() -> Command {
     let mut env = Command::new("env");
     env = env.visible_alias("environment");
@@ -72,7 +69,6 @@ pub fn init_current_environment_cmd() -> Command {
     env
 }
 
-/// remove の配下にぶら下げる environment 用の resource コマンド
 pub fn init_remove_environment_cmd() -> Command {
     let mut env = Command::new("env");
     env = env.visible_alias("environment");
