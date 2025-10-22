@@ -27,7 +27,7 @@ pub mod ent {
 	
 	// Re-export commonly used types
 	pub use crate::util::error::vem_error_t;
-	pub use model::environment::{environment_meta_t, environment_t};
+	pub use model::environment::ENVIRONMENT;
 }
 
 pub mod rep {
@@ -36,8 +36,8 @@ pub mod rep {
 	pub mod environment;
 
 	// Re-exports and aliases to keep external API stable
-	pub use environment::environment_repository_t;
-	pub type EnvironmentRepository = environment_repository_t;
+	pub use environment::environment_repository;
+	pub type EnvironmentRepository = dyn environment::EnvironmentRepository;
 }
 
 pub mod usc {
@@ -46,8 +46,7 @@ pub mod usc {
 	pub mod environment;
 
 	// Re-exports and aliases
-	pub use environment::environment_manager_t;
-	// Note: EnvironmentManager is generic, use environment_manager_t<R> directly
+	pub use environment::EnvironmentUsecase;
 }
 
 pub mod ctl {

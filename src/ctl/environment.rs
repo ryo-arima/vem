@@ -7,7 +7,6 @@ use clap::{
 pub fn init_create_environment_cmd() -> Command {
     let mut env = Command::new("env");
     env = env.visible_alias("environment");
-    env = env.visible_alias("environments");
     env = env.about("Create an environment resource");
 
     let mut name = Arg::new("name");
@@ -29,10 +28,9 @@ pub fn init_create_environment_cmd() -> Command {
 }
 
 pub fn init_list_environment_cmd() -> Command {
-    let mut env = Command::new("env");
-    env = env.visible_alias("environment");
-    env = env.visible_alias("environments");
-    env = env.about("List environment resources");
+    let mut envs = Command::new("envs");
+    envs = envs.visible_alias("environments");
+    envs = envs.about("List environment resources");
 
     let mut verbose = Arg::new("verbose");
     verbose = verbose
@@ -40,15 +38,14 @@ pub fn init_list_environment_cmd() -> Command {
         .short('v')
         .long("verbose")
         .action(ArgAction::SetTrue);
-    env = env.arg(verbose);
+    envs = envs.arg(verbose);
 
-    env
+    envs
 }
 
 pub fn init_switch_environment_cmd() -> Command {
     let mut env = Command::new("env");
     env = env.visible_alias("environment");
-    env = env.visible_alias("environments");
     env = env.about("Switch active environment resource");
 
     let mut name = Arg::new("name");
@@ -64,7 +61,6 @@ pub fn init_switch_environment_cmd() -> Command {
 pub fn init_current_environment_cmd() -> Command {
     let mut env = Command::new("env");
     env = env.visible_alias("environment");
-    env = env.visible_alias("environments");
     env = env.about("Show current environment resource");
     env
 }
@@ -72,7 +68,6 @@ pub fn init_current_environment_cmd() -> Command {
 pub fn init_remove_environment_cmd() -> Command {
     let mut env = Command::new("env");
     env = env.visible_alias("environment");
-    env = env.visible_alias("environments");
     env = env.about("Remove an environment resource");
 
     let mut name = Arg::new("name");
@@ -81,14 +76,6 @@ pub fn init_remove_environment_cmd() -> Command {
         .required(true)
         .value_name("NAME");
     env = env.arg(name);
-
-    let mut force = Arg::new("force");
-    force = force
-        .help("Force removal without confirmation")
-        .short('f')
-        .long("force")
-        .action(ArgAction::SetTrue);
-    env = env.arg(force);
 
     env
 }

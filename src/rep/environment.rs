@@ -1,93 +1,186 @@
 #![allow(non_camel_case_types)]
 
 use std::fs;
+use std::ops::Deref;
 
 use crate::cnf::application::app_config_t;
 use crate::util::error::vem_error_t;
-use crate::ent::model::environment::{
-    environment_meta_t, environment_t
-};
+use crate::ent::model::environment::ENVIRONMENT;
 
-/// Repository interface for managing environment data
-pub trait EnvironmentRepository {
-    fn create(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t>;
-    fn list(&self) -> Result<Vec<environment_t>, vem_error_t>;
-    fn get(&self, name: &str) -> Result<environment_t, vem_error_t>;
-    fn update(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t>;
-    fn delete(&self, name: &str) -> Result<(), vem_error_t>;
-    fn get_current(&self) -> Result<environment_t, vem_error_t>;
-    fn set_current(&self, name: &str) -> Result<(), vem_error_t>;
-}
-
-/// Repository for managing environment data
-pub struct environment_repository_t {
+/// Base configuration holder - similar to Go's embedded struct
+pub struct RepositoryConfig {
     config: app_config_t,
 }
 
-impl environment_repository_t {
+impl RepositoryConfig {
     pub fn new(config: app_config_t) -> Self {
-        Self {
-            config,
-        }
+        Self { config }
     }
 
+    pub fn config(&self) -> &app_config_t {
+        &self.config
+    }
+}
+
+/// Environment repository trait
+pub trait EnvironmentRepository {
+    fn create(&self, name: &str, description: Option<String>) -> (ENVIRONMENT, bool);
+    fn list(&self) -> Vec<ENVIRONMENT>;
+    fn get(&self, name: &str) -> ENVIRONMENT;
+    fn update(&self, name: &str, description: Option<String>) -> (ENVIRONMENT, bool);
+    fn delete(&self, name: &str) -> bool;
+    fn get_current(&self) -> ENVIRONMENT;
+    fn set_current(&self, name: &str) -> bool;
+}
+
+/// Environment repository implementation with embedded config
+pub struct environment_repository {
+    base: RepositoryConfig,  // Embedded base struct (like Go)
+}
+
+impl environment_repository {
+    pub fn new(config: app_config_t) -> Self {
+        Self {
+            base: RepositoryConfig::new(config),
+        }
+    }
+}
+
+// Deref implementation for automatic access to base methods (like Go's embedding)
+impl Deref for environment_repository {
+    type Target = RepositoryConfig;
+
+    fn deref(&self) -> &Self::Target {
+        &self.base
+    }
+}
+
+impl EnvironmentRepository for environment_repository {
     /// Create a new environment
-    pub fn create(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t> {
+    fn create(&self, name: &str, description: Option<String>) -> (ENVIRONMENT, bool) {
         // Validate environment name
-        if !environment_t::is_valid_name(name) {
-            return Err(vem_error_t::InvalidEnvironmentName(name.to_string()));
+        if name.is_empty() || name.contains('/') || name.contains('\\') {
+            let default_env = ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+            return (default_env, false);
         }
 
-        let env_path = self.config.environment_root().join(name);
+        // Access config through Deref (like Go's embedded field access)
+        let env_path = self.config().environment_root().join(name);
 
         // Check if environment already exists
         if env_path.exists() {
-            return Err(vem_error_t::EnvironmentAlreadyExists(name.to_string()));
+            let default_env = ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+            return (default_env, false);
         }
 
         // Create environment directory structure
-        fs::create_dir_all(&env_path)?;
+        if fs::create_dir_all(&env_path).is_err() {
+            let default_env = ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+            return (default_env, false);
+        }
 
-        let meta = environment_meta_t::new(description);
-        let env = environment_t::new(name, env_path.clone(), meta);
+        let env = ENVIRONMENT {
+            name: name.to_string(),
+            description,
+            created: chrono::Utc::now(),
+            update: chrono::Utc::now(),
+            last_used: None,
+            tags: Vec::new(),
+        };
 
         // Create .vimrc file
-        let vimrc_path = env.vimrc_path();
-        if !vimrc_path.exists() {
-            fs::write(&vimrc_path, format!("\" VEM Environment: {}\n", name))?;
+        let vimrc_path = env_path.join(".vimrc");
+        if !vimrc_path.exists()
+            && fs::write(&vimrc_path, format!("\" VEM Environment: {}\n", name)).is_err()
+        {
+            let default_env = ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+            return (default_env, false);
         }
 
         // Create .vim directory structure
-        let vim_dir = env.vim_dir_path();
-        fs::create_dir_all(&vim_dir)?;
-        fs::create_dir_all(vim_dir.join("autoload"))?;
-        fs::create_dir_all(vim_dir.join("bundle"))?;
-        fs::create_dir_all(vim_dir.join("colors"))?;
-        fs::create_dir_all(vim_dir.join("plugin"))?;
+        let vim_dir = env_path.join(".vim");
+        if fs::create_dir_all(&vim_dir).is_err()
+            || fs::create_dir_all(vim_dir.join("autoload")).is_err()
+            || fs::create_dir_all(vim_dir.join("bundle")).is_err()
+            || fs::create_dir_all(vim_dir.join("colors")).is_err()
+            || fs::create_dir_all(vim_dir.join("plugin")).is_err()
+        {
+            let default_env = ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+            return (default_env, false);
+        }
 
         // Save metadata
-        self.save_metadata(&env)?;
+        if self.save_metadata(name, &env).is_err() {
+            let default_env = ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+            return (default_env, false);
+        }
 
-        Ok(env)
+        (env, true)
     }
 
     /// List all environments
-    pub fn list(&self) -> Result<Vec<environment_t>, vem_error_t> {
+    fn list(&self) -> Vec<ENVIRONMENT> {
         let mut environments = Vec::new();
 
-        if !self.config.environment_root().exists() {
-            return Ok(environments);
+        // Access config through Deref (like Go's embedded field)
+        if !self.config().environment_root().exists() {
+            return environments;
         }
 
-        let entries = fs::read_dir(self.config.environment_root())?;
+        let Ok(entries) = fs::read_dir(self.config().environment_root()) else {
+            return environments;
+        };
 
         for entry in entries {
-            let entry = entry?;
+            let Ok(entry) = entry else { continue };
             let path = entry.path();
 
             if path.is_dir() {
                 if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
-                    if let Ok(env) = self.get(name) {
+                    let env = self.get(name);
+                    if !env.name.is_empty() {
                         environments.push(env);
                     }
                 }
@@ -95,152 +188,223 @@ impl environment_repository_t {
         }
 
         // Sort by name
-        environments.sort_by(|a, b| a.name().cmp(b.name()));
-        Ok(environments)
+        environments.sort_by(|a, b| a.name.cmp(&b.name));
+        environments
     }
 
     /// Get an environment by name
-    pub fn get(&self, name: &str) -> Result<environment_t, vem_error_t> {
-        let env_path = self.config.environment_root().join(name);
+    fn get(&self, name: &str) -> ENVIRONMENT {
+        let env_path = self.config().environment_root().join(name);
 
         if !env_path.exists() {
-            return Err(vem_error_t::EnvironmentNotFound(name.to_string()));
+            return ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
         }
 
-        let meta = self.load_metadata(&env_path)?;
-        Ok(environment_t::new(name, env_path, meta))
+        let Ok(env) = self.load_metadata(name) else {
+            return ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+        };
+
+        env
     }
 
     /// Update an environment's metadata
-    pub fn update(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t> {
-        let mut env = self.get(name)?;
-        env.meta_mut().set_description(description);
-        self.save_metadata(&env)?;
-        Ok(env)
+    fn update(&self, name: &str, description: Option<String>) -> (ENVIRONMENT, bool) {
+        let env = self.get(name);
+        
+        if env.name.is_empty() {
+            let default_env = ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+            return (default_env, false);
+        }
+
+        let updated_env = ENVIRONMENT {
+            name: name.to_string(),
+            description,
+            created: env.created,
+            update: chrono::Utc::now(),
+            last_used: env.last_used,
+            tags: env.tags,
+        };
+        
+        if self.save_metadata(name, &updated_env).is_err() {
+            let default_env = ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+            return (default_env, false);
+        }
+
+        (updated_env, true)
     }
 
     /// Delete an environment
-    pub fn delete(&self, name: &str) -> Result<(), vem_error_t> {
-        let env_path = self.config.environment_root().join(name);
+    fn delete(&self, name: &str) -> bool {
+        let env_path = self.config().environment_root().join(name);
 
         if !env_path.exists() {
-            return Err(vem_error_t::EnvironmentNotFound(name.to_string()));
+            return false;
         }
 
         // Check if it's the current environment
-        if let Ok(current) = self.get_current() {
-            if current.name() == name {
-                return Err(vem_error_t::ConfigurationError(
-                    "Cannot remove the currently active environment".to_string(),
-                ));
-            }
+        let current = self.get_current();
+        if !current.name.is_empty() && current.name == name {
+            return false;
         }
 
-        fs::remove_dir_all(&env_path)?;
-        Ok(())
+        fs::remove_dir_all(&env_path).is_ok()
     }
 
     /// Get the current environment
-    pub fn get_current(&self) -> Result<environment_t, vem_error_t> {
+    fn get_current(&self) -> ENVIRONMENT {
         let current_link = app_config_t::current_link_path();
 
         if !current_link.exists() {
-            return Err(vem_error_t::NoCurrentEnvironment);
+            return ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
         }
 
-        let target = fs::read_link(&current_link)?;
+        let Ok(target) = fs::read_link(&current_link) else {
+            return ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+        };
 
         if let Some(name) = target.file_name().and_then(|n| n.to_str()) {
             self.get(name)
         } else {
-            Err(vem_error_t::NoCurrentEnvironment)
+            ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            }
         }
     }
 
     /// Set the current environment
-    pub fn set_current(&self, name: &str) -> Result<(), vem_error_t> {
-        let mut env = self.get(name)?; // Validate environment exists
+    fn set_current(&self, name: &str) -> bool {
+        let env = self.get(name);
+        
+        if env.name.is_empty() {
+            return false;
+        }
+
         let current_link = app_config_t::current_link_path();
+        let env_path = self.config().environment_root().join(name);
 
         // Remove existing symlink if it exists
-        if current_link.exists() {
-            fs::remove_file(&current_link)?;
+        if current_link.exists()
+            && fs::remove_file(&current_link).is_err()
+        {
+            return false;
         }
 
         // Create symlink to the environment
         #[cfg(unix)]
         {
-            std::os::unix::fs::symlink(env.path(), &current_link)?;
+            if std::os::unix::fs::symlink(&env_path, &current_link).is_err() {
+                return false;
+            }
         }
 
         #[cfg(windows)]
         {
-            std::os::windows::fs::symlink_dir(env.path(), &current_link)?;
+            if std::os::windows::fs::symlink_dir(&env_path, &current_link).is_err() {
+                return false;
+            }
         }
 
         // Update last_used timestamp
-        env.meta_mut().set_last_used(Some(chrono::Utc::now()));
-        self.save_metadata(&env)?;
+        let updated_env = ENVIRONMENT {
+            name: env.name,
+            description: env.description,
+            created: env.created,
+            update: chrono::Utc::now(),
+            last_used: Some(chrono::Utc::now()),
+            tags: env.tags,
+        };
+        if self.save_metadata(name, &updated_env).is_err() {
+            return false;
+        }
 
-        Ok(())
+        true
     }
+}
 
+// Private helper methods
+impl environment_repository {
     /// Save environment metadata to meta.toml
-    fn save_metadata(&self, env: &environment_t) -> Result<(), vem_error_t> {
-        let meta_path = env.meta_path();
-        let content = toml::to_string_pretty(env.meta())
+    fn save_metadata(&self, name: &str, env: &ENVIRONMENT) -> Result<(), vem_error_t> {
+        let env_path = self.config().environment_root().join(name);
+        let meta_path = env_path.join("meta.toml");
+        let content = toml::to_string_pretty(env)
             .map_err(|e| vem_error_t::SerializationError(format!("Failed to serialize metadata: {}", e)))?;
         fs::write(&meta_path, content)?;
         Ok(())
     }
 
     /// Load environment metadata from meta.toml
-    fn load_metadata(&self, env_path: &std::path::Path) -> Result<environment_meta_t, vem_error_t> {
+    fn load_metadata(&self, name: &str) -> Result<ENVIRONMENT, vem_error_t> {
+        let env_path = self.config().environment_root().join(name);
         let meta_path = env_path.join("meta.toml");
 
         if !meta_path.exists() {
-            // Return default metadata if file doesn't exist
-            return Ok(environment_meta_t::new(None));
+            // Return default environment if file doesn't exist
+            return Ok(ENVIRONMENT {
+                name: name.to_string(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            });
         }
 
         let content = fs::read_to_string(&meta_path)?;
-        let meta: environment_meta_t = toml::from_str(&content)
+        let env: ENVIRONMENT = toml::from_str(&content)
             .map_err(|e| vem_error_t::SerializationError(format!("Failed to parse metadata: {}", e)))?;
-        Ok(meta)
-    }
-}
-
-impl EnvironmentRepository for environment_repository_t {
-    fn create(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t> {
-        self.create(name, description)
-    }
-    
-    fn list(&self) -> Result<Vec<environment_t>, vem_error_t> {
-        self.list()
-    }
-    
-    fn get(&self, name: &str) -> Result<environment_t, vem_error_t> {
-        self.get(name)
-    }
-    
-    fn update(&self, name: &str, description: Option<String>) -> Result<environment_t, vem_error_t> {
-        self.update(name, description)
-    }
-    
-    fn delete(&self, name: &str) -> Result<(), vem_error_t> {
-        self.delete(name)
-    }
-    
-    fn get_current(&self) -> Result<environment_t, vem_error_t> {
-        self.get_current()
-    }
-    
-    fn set_current(&self, name: &str) -> Result<(), vem_error_t> {
-        self.set_current(name)
+        Ok(env)
     }
 }
 
 /// Factory function to create environment repository
-pub fn create_environment_repository(config: app_config_t) -> Result<impl EnvironmentRepository, vem_error_t> {
-    Ok(environment_repository_t::new(config))
+pub fn new(config: app_config_t) -> impl EnvironmentRepository {
+    environment_repository::new(config)
 }
