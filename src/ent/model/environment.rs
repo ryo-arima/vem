@@ -2,6 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
+#[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ENVIRONMENT {
     pub name: String,

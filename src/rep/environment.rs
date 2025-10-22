@@ -111,18 +111,18 @@ impl EnvironmentRepository for environment_repository {
 
         // Create .vimrc file
         let vimrc_path = env_path.join(".vimrc");
-        if !vimrc_path.exists() {
-            if fs::write(&vimrc_path, format!("\" VEM Environment: {}\n", name)).is_err() {
-                let default_env = ENVIRONMENT {
-                    name: String::new(),
-                    description: None,
-                    created: chrono::Utc::now(),
-                    update: chrono::Utc::now(),
-                    last_used: None,
-                    tags: Vec::new(),
-                };
-                return (default_env, false);
-            }
+        if !vimrc_path.exists()
+            && fs::write(&vimrc_path, format!("\" VEM Environment: {}\n", name)).is_err()
+        {
+            let default_env = ENVIRONMENT {
+                name: String::new(),
+                description: None,
+                created: chrono::Utc::now(),
+                update: chrono::Utc::now(),
+                last_used: None,
+                tags: Vec::new(),
+            };
+            return (default_env, false);
         }
 
         // Create .vim directory structure
@@ -330,10 +330,10 @@ impl EnvironmentRepository for environment_repository {
         let env_path = self.config().environment_root().join(name);
 
         // Remove existing symlink if it exists
-        if current_link.exists() {
-            if fs::remove_file(&current_link).is_err() {
-                return false;
-            }
+        if current_link.exists()
+            && fs::remove_file(&current_link).is_err()
+        {
+            return false;
         }
 
         // Create symlink to the environment
