@@ -18,6 +18,7 @@ pub mod ent {
 	// domain models
 	pub mod model {
 		pub mod environment;
+		pub mod vimscript;
 	}
 	
 	pub mod request {
@@ -31,16 +32,52 @@ pub mod ent {
 	// Re-export commonly used types
 	pub use crate::util::error::vem_error_t;
 	pub use model::environment::ENVIRONMENT;
+	pub use model::vimscript::{
+		VIMSCRIPT_CONFIG, GLOBAL_VIMSCRIPT_CONFIG,
+		VimScript, VimFunction, VimCommand, VimAutoCommand, VimKeymap,
+		ScriptType, FunctionType, CommandType, KeymapMode
+	};
 }
 
 pub mod rep {
 	// repositories
 	#[path = "environment.rs"]
 	pub mod environment;
+	#[path = "vimscript.rs"]
+	pub mod vimscript;
 
 	// Re-exports and aliases to keep external API stable
 	pub use environment::environment_repository;
+	pub use vimscript::vimscript_repository;
 	pub type EnvironmentRepository = dyn environment::EnvironmentRepository;
+	pub type VimScriptRepository = dyn vimscript::VimScriptRepository;
+	
+	// Shared repository configuration with Go-style embedding support
+	use crate::cnf::application::app_config;
+	use std::path::PathBuf;
+	
+	#[derive(Debug, Clone)]
+	pub struct RepositoryConfig {
+		pub app_config: app_config,
+		pub base_path: PathBuf,
+	}
+	
+	impl RepositoryConfig {
+		pub fn new() -> Self {
+			let app_config = app_config::load().unwrap_or_default();
+			let base_path = app_config.get_base_path();
+			Self {
+				app_config,
+				base_path,
+			}
+		}
+	}
+	
+	impl Default for RepositoryConfig {
+		fn default() -> Self {
+			Self::new()
+		}
+	}
 }
 
 pub mod usc {
