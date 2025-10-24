@@ -3,21 +3,21 @@
 use std::fs;
 use std::ops::Deref;
 
-use crate::cnf::application::app_config_t;
+use crate::cnf::application::app_config;
 use crate::util::error::vem_error_t;
 use crate::ent::model::environment::ENVIRONMENT;
 
 /// Base configuration holder - similar to Go's embedded struct
 pub struct RepositoryConfig {
-    config: app_config_t,
+    config: app_config,
 }
 
 impl RepositoryConfig {
-    pub fn new(config: app_config_t) -> Self {
+    pub fn new(config: app_config) -> Self {
         Self { config }
     }
 
-    pub fn config(&self) -> &app_config_t {
+    pub fn config(&self) -> &app_config {
         &self.config
     }
 }
@@ -39,7 +39,7 @@ pub struct environment_repository {
 }
 
 impl environment_repository {
-    pub fn new(config: app_config_t) -> Self {
+    pub fn new(config: app_config) -> Self {
         Self {
             base: RepositoryConfig::new(config),
         }
@@ -280,7 +280,7 @@ impl EnvironmentRepository for environment_repository {
 
     /// Get the current environment
     fn get_current(&self) -> ENVIRONMENT {
-        let current_link = app_config_t::current_link_path();
+        let current_link = app_config::current_link_path();
 
         if !current_link.exists() {
             return ENVIRONMENT {
@@ -326,7 +326,7 @@ impl EnvironmentRepository for environment_repository {
             return false;
         }
 
-        let current_link = app_config_t::current_link_path();
+        let current_link = app_config::current_link_path();
         let env_path = self.config().environment_root().join(name);
 
         // Remove existing symlink if it exists
@@ -405,6 +405,6 @@ impl environment_repository {
 }
 
 /// Factory function to create environment repository
-pub fn new(config: app_config_t) -> impl EnvironmentRepository {
+pub fn new(config: app_config) -> impl EnvironmentRepository {
     environment_repository::new(config)
 }

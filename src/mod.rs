@@ -6,8 +6,11 @@ pub mod cnf {
 	pub mod application;
 
 	// Re-exports and backward-compatible aliases
-	pub use application::{app_config_t, symlink_mode_t};
-	pub type AppConfig = app_config_t;
+	pub use application::{
+		app_config,
+		symlink_mode_t
+	};
+	pub type AppConfig = app_config;
 	pub type SymlinkMode = symlink_mode_t;
 }
 
