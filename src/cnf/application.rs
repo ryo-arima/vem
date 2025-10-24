@@ -20,7 +20,7 @@ pub enum symlink_mode_t {
 
 // Application configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct app_config_t {
+pub struct app_config {
     default_environment: Option<String>, // Default environment name
     auto_switch: bool, // Auto-switch to default environment on startup
     backup_enabled: bool, // Enable backups
@@ -30,7 +30,7 @@ pub struct app_config_t {
     editor: String, // Default editor
 }
 
-impl Default for app_config_t {
+impl Default for app_config {
     fn default() -> Self {
         let vem_home = Self::vem_home();
         Self {
@@ -45,7 +45,7 @@ impl Default for app_config_t {
     }
 }
 
-impl app_config_t {
+impl app_config{
     // Get the VEM home directory
     pub fn vem_home() -> PathBuf {
         if let Ok(vem_home_env) = std::env::var("VEM_HOME") {
