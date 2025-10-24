@@ -18,6 +18,7 @@ pub mod ent {
 	// domain models
 	pub mod model {
 		pub mod environment;
+		pub mod lsp;
 	}
 	
 	pub mod request {
@@ -31,16 +32,19 @@ pub mod ent {
 	// Re-export commonly used types
 	pub use crate::util::error::vem_error_t;
 	pub use model::environment::ENVIRONMENT;
+	pub use model::lsp::{LSP_CONFIG, LanguageServer, LanguageServerType};
 }
 
 pub mod rep {
 	// repositories
-	#[path = "environment.rs"]
 	pub mod environment;
+	pub mod lsp;
 
 	// Re-exports and aliases to keep external API stable
 	pub use environment::environment_repository;
+	pub use lsp::lsp_repository;
 	pub type EnvironmentRepository = dyn environment::EnvironmentRepository;
+	pub type LspRepository = dyn lsp::LspRepository;
 }
 
 pub mod usc {
