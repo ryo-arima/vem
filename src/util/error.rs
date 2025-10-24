@@ -19,6 +19,8 @@ pub enum vem_error_t {
     SerializationError(String),
     /// No current environment set
     NoCurrentEnvironment,
+    /// Command execution error
+    CommandExecutionError(String),
 }
 
 impl fmt::Display for vem_error_t {
@@ -44,6 +46,9 @@ impl fmt::Display for vem_error_t {
             },
             vem_error_t::NoCurrentEnvironment => {
                 write!(f, "No current environment is set")
+            },
+            vem_error_t::CommandExecutionError(msg) => {
+                write!(f, "Command execution error: {}", msg)
             },
         }
     }
