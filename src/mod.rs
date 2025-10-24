@@ -18,6 +18,7 @@ pub mod ent {
 	// domain models
 	pub mod model {
 		pub mod environment;
+		pub mod ctags;
 	}
 	
 	pub mod request {
@@ -31,16 +32,19 @@ pub mod ent {
 	// Re-export commonly used types
 	pub use crate::util::error::vem_error_t;
 	pub use model::environment::ENVIRONMENT;
+	pub use model::ctags::{CTAGS_CONFIG, CTAGS_INDEX, CtagsOutputFormat};
 }
 
 pub mod rep {
 	// repositories
-	#[path = "environment.rs"]
 	pub mod environment;
+	pub mod ctags;
 
 	// Re-exports and aliases to keep external API stable
 	pub use environment::environment_repository;
+	pub use ctags::ctags_repository;
 	pub type EnvironmentRepository = dyn environment::EnvironmentRepository;
+	pub type CtagsRepository = dyn ctags::CtagsRepository;
 }
 
 pub mod usc {
