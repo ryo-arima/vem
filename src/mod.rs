@@ -19,6 +19,7 @@ pub mod ent {
 	pub mod model {
 		pub mod environment;
 		pub mod ai;
+		pub mod theme;
 	}
 	
 	pub mod request {
@@ -33,6 +34,7 @@ pub mod ent {
 	pub use crate::util::error::vem_error_t;
 	pub use model::environment::ENVIRONMENT;
 	pub use model::ai::{AI_CONFIG, AITool, AIToolType};
+	pub use model::theme::{THEME_CONFIG, Theme, ThemeType, ThemeBackground};
 }
 
 pub mod rep {
@@ -41,12 +43,16 @@ pub mod rep {
 	pub mod environment;
 	#[path = "ai.rs"]
 	pub mod ai;
+	#[path = "theme.rs"]
+	pub mod theme;
 
 	// Re-exports and aliases to keep external API stable
 	pub use environment::environment_repository;
 	pub use ai::ai_repository;
+	pub use theme::theme_repository;
 	pub type EnvironmentRepository = dyn environment::EnvironmentRepository;
 	pub type AiRepository = dyn ai::AiRepository;
+	pub type ThemeRepository = dyn theme::ThemeRepository;
 	
 	// Shared repository configuration with Go-style embedding support
 	use crate::cnf::application::app_config;
