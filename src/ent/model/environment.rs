@@ -1,6 +1,7 @@
 #![allow(non_camel_case_types)]
 
 use serde::{Deserialize, Serialize};
+use super::package_manager::VimPackageManager;
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -11,4 +12,5 @@ pub struct ENVIRONMENT {
     pub update: chrono::DateTime<chrono::Utc>,
     pub last_used: Option<chrono::DateTime<chrono::Utc>>,
     pub tags: Vec<String>,
+    pub package_manager: Option<VimPackageManager>,
 }

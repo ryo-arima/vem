@@ -67,6 +67,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
             return (default_env, false);
         }
@@ -83,6 +84,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
             return (default_env, false);
         }
@@ -96,6 +98,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
             return (default_env, false);
         }
@@ -107,6 +110,7 @@ impl EnvironmentRepository for environment_repository {
             update: chrono::Utc::now(),
             last_used: None,
             tags: Vec::new(),
+            package_manager: None,
         };
 
         // Create .vimrc file
@@ -121,6 +125,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
             return (default_env, false);
         }
@@ -140,6 +145,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
             return (default_env, false);
         }
@@ -153,6 +159,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
             return (default_env, false);
         }
@@ -204,6 +211,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
         }
 
@@ -215,6 +223,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
         };
 
@@ -233,6 +242,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
             return (default_env, false);
         }
@@ -244,6 +254,7 @@ impl EnvironmentRepository for environment_repository {
             update: chrono::Utc::now(),
             last_used: env.last_used,
             tags: env.tags,
+            package_manager: env.package_manager,
         };
         
         if self.save_metadata(name, &updated_env).is_err() {
@@ -254,6 +265,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
             return (default_env, false);
         }
@@ -290,6 +302,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
         }
 
@@ -301,6 +314,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             };
         };
 
@@ -314,6 +328,7 @@ impl EnvironmentRepository for environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             }
         }
     }
@@ -359,6 +374,7 @@ impl EnvironmentRepository for environment_repository {
             update: chrono::Utc::now(),
             last_used: Some(chrono::Utc::now()),
             tags: env.tags,
+            package_manager: env.package_manager,
         };
         if self.save_metadata(name, &updated_env).is_err() {
             return false;
@@ -394,6 +410,7 @@ impl environment_repository {
                 update: chrono::Utc::now(),
                 last_used: None,
                 tags: Vec::new(),
+                package_manager: None,
             });
         }
 

@@ -18,6 +18,7 @@ pub mod ent {
 	// domain models
 	pub mod model {
 		pub mod environment;
+		pub mod package_manager;
 	}
 	
 	pub mod request {
@@ -31,16 +32,19 @@ pub mod ent {
 	// Re-export commonly used types
 	pub use crate::util::error::vem_error_t;
 	pub use model::environment::ENVIRONMENT;
+	pub use model::package_manager::{PACKAGE_MANAGER_CONFIG, VimPackageManager, PluginInfo};
 }
 
 pub mod rep {
 	// repositories
-	#[path = "environment.rs"]
 	pub mod environment;
+	pub mod package_manager;
 
 	// Re-exports and aliases to keep external API stable
 	pub use environment::environment_repository;
+	pub use package_manager::package_manager_repository;
 	pub type EnvironmentRepository = dyn environment::EnvironmentRepository;
+	pub type PackageManagerRepository = dyn package_manager::PackageManagerRepository;
 }
 
 pub mod usc {
