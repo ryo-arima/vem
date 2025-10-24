@@ -125,6 +125,14 @@ impl app_config{
         &self.environment_root
     }
 
+    pub fn get_environment_path(&self, environment_name: &str) -> PathBuf {
+        self.environment_root.join(environment_name)
+    }
+
+    pub fn get_base_path(&self) -> PathBuf {
+        Self::vem_home()
+    }
+
     #[allow(dead_code)]
     pub fn default_environment(&self) -> Option<&str> {
         self.default_environment.as_deref()
