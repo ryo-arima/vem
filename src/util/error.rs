@@ -1,9 +1,6 @@
-#![allow(non_camel_case_types)]
-
 use std::fmt;
 
 /// VEM error types
-#[derive(Debug)]
 pub enum vem_error_t {
     /// Environment not found
     EnvironmentNotFound(String),
@@ -66,7 +63,6 @@ impl From<std::io::Error> for vem_error_t {
 
 /// Exit codes for VEM commands
 #[allow(dead_code)]
-#[allow(clippy::upper_case_acronyms)]
 pub enum exit_code_t {
     SUCCESS = 0,
     GENERAL_ERROR = 1,

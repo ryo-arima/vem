@@ -1,5 +1,3 @@
-#![allow(non_camel_case_types)]
-
 use crate::ent::request::environment::ENVIRONMENT as RequestEnvironment;
 use crate::ent::response::environment::ENVIRONMENT as ResponseEnvironment;
 

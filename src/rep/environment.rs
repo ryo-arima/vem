@@ -1,9 +1,7 @@
-#![allow(non_camel_case_types)]
-
 use std::fs;
 use std::ops::Deref;
 
-use crate::cnf::application::app_config;
+use crate::cnf::application::{app_config, current_link_path};
 use crate::util::error::vem_error_t;
 use crate::ent::model::environment::ENVIRONMENT;
 
@@ -177,12 +175,12 @@ impl EnvironmentRepository for environment_repository {
             let Ok(entry) = entry else { continue };
             let path = entry.path();
 
-            if path.is_dir() {
-                if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
-                    let env = self.get(name);
-                    if !env.name.is_empty() {
-                        environments.push(env);
-                    }
+            if path.is_dir()
+                && let Some(name) = path.file_name().and_then(|n| n.to_str())
+            {
+                let env = self.get(name);
+                if !env.name.is_empty() {
+                    environments.push(env);
                 }
             }
         }
@@ -280,7 +278,7 @@ impl EnvironmentRepository for environment_repository {
 
     /// Get the current environment
     fn get_current(&self) -> ENVIRONMENT {
-        let current_link = app_config::current_link_path();
+        let current_link = current_link_path();
 
         if !current_link.exists() {
             return ENVIRONMENT {
@@ -326,7 +324,7 @@ impl EnvironmentRepository for environment_repository {
             return false;
         }
 
-        let current_link = app_config::current_link_path();
+        let current_link = current_link_path();
         let env_path = self.config().environment_root().join(name);
 
         // Remove existing symlink if it exists
