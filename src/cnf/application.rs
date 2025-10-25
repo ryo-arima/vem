@@ -1,82 +1,80 @@
-#![allow(non_camel_case_types)]
-
-use serde::{
-    Deserialize,
-    Serialize
-};
 use std::path::PathBuf;
 use crate::util::error::vem_error_t;
 use dirs;
 
 // Symlink mode for environment switching
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[allow(clippy::upper_case_acronyms)]
 pub enum symlink_mode_t {
-    #[serde(rename = "symbolic")]
     SYMBOLIC,
-    #[serde(rename = "hard")]
     HARD,
 }
 
+// Trait for application configuration (Go-style interface)
+pub trait AppConfig {
+    fn load() -> Result<app_config, vem_error_t>;
+    fn save(&self) -> Result<(), vem_error_t>;
+    fn validate(&self) -> Result<(), vem_error_t>;
+    fn environment_root(&self) -> &PathBuf;
+    fn get_environment_path(&self, environment_name: &str) -> PathBuf;
+    fn get_base_path(&self) -> PathBuf;
+    fn default_environment(&self) -> Option<&str>;
+    fn editor(&self) -> &str;
+}
+
 // Application configuration
-#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct app_config {
-    default_environment: Option<String>, // Default environment name
-    auto_switch: bool, // Auto-switch to default environment on startup
-    backup_enabled: bool, // Enable backups
-    backup_retention_days: u32, // Days to keep backups
-    environment_root: PathBuf, // Root directory for environments
-    symlink_mode: symlink_mode_t, // Symlink mode for environment switching
-    editor: String, // Default editor
+    pub default_environment: Option<String>, // Default environment name
+    pub auto_switch: bool, // Auto-switch to default environment on startup
+    pub backup_enabled: bool, // Enable backups
+    pub backup_retention_days: u32, // Days to keep backups
+    pub environment_root: PathBuf, // Root directory for environments
+    pub symlink_mode: symlink_mode_t, // Symlink mode for environment switching
+    pub editor: String, // Default editor
 }
 
-impl Default for app_config {
-    fn default() -> Self {
-        let vem_home = Self::vem_home();
-        Self {
-            default_environment: None,
-            auto_switch: false,
-            backup_enabled: true,
-            backup_retention_days: 30,
-            environment_root: vem_home.join("environments"),
-            symlink_mode: symlink_mode_t::SYMBOLIC,
-            editor: "vim".to_string(),
-        }
+pub fn new_app_config() -> app_config {
+    let vem_home = get_vem_home();
+    app_config {
+        default_environment: None,
+        auto_switch: false,
+        backup_enabled: true,
+        backup_retention_days: 30,
+        environment_root: vem_home.join("environments"),
+        symlink_mode: symlink_mode_t::SYMBOLIC,
+        editor: "vim".to_string(),
     }
 }
 
-impl app_config{
-    // Get the VEM home directory
-    pub fn vem_home() -> PathBuf {
-        if let Ok(vem_home_env) = std::env::var("VEM_HOME") {
-            PathBuf::from(vem_home_env)
-        } else {
-            dirs::home_dir()
-                .unwrap_or_else(|| PathBuf::from("."))
-                .join(".vem")
-        }
+pub fn get_vem_home() -> PathBuf {
+    if let Ok(vem_home_env) = std::env::var("VEM_HOME") {
+        PathBuf::from(vem_home_env)
+    } else {
+        dirs::home_dir()
+            .unwrap_or_else(|| PathBuf::from("."))
+            .join(".vem")
     }
+}
 
-    // Get the configuration file path
-    pub fn config_path() -> PathBuf {
-        if let Ok(config_path) = std::env::var("VEM_CONFIG") {
-            PathBuf::from(config_path)
-        } else {
-            Self::vem_home().join("config.toml")
-        }
+// Get the configuration file path
+pub fn config_path() -> PathBuf {
+    if let Ok(config_path) = std::env::var("VEM_CONFIG") {
+        PathBuf::from(config_path)
+    } else {
+        get_vem_home().join("config.toml")
     }
+}
 
-    // Get the current environment symlink path
-    pub fn current_link_path() -> PathBuf {
-        Self::vem_home().join("current")
-    }
+// Get the current environment symlink path
+pub fn current_link_path() -> PathBuf {
+    get_vem_home().join("current")
+}
 
+impl app_config {
     // Load configuration from file, creating default if not exists
     pub fn load() -> Result<Self, vem_error_t> {
-        let config_path = Self::config_path();
+        let config_path = config_path();
 
         if !config_path.exists() {
-            let config = Self::default();
+            let config = new_app_config();
             config.save()?;
             return Ok(config);
         }
@@ -90,7 +88,7 @@ impl app_config{
 
     // Save configuration to file
     pub fn save(&self) -> Result<(), vem_error_t> {
-        let config_path = Self::config_path();
+        let config_path = config_path();
 
         // Ensure parent directory exists
         if let Some(parent) = config_path.parent() {
@@ -123,6 +121,14 @@ impl app_config{
 
     pub fn environment_root(&self) -> &PathBuf {
         &self.environment_root
+    }
+
+    pub fn get_environment_path(&self, environment_name: &str) -> PathBuf {
+        self.environment_root.join(environment_name)
+    }
+
+    pub fn get_base_path(&self) -> PathBuf {
+        get_vem_home()
     }
 
     #[allow(dead_code)]
