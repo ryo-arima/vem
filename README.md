@@ -8,6 +8,49 @@
 
 VEM is a command-line tool written in Rust for efficiently managing multiple Vim environments. Switch between different `.vim` configurations easily based on your needs and preferences.
 
+## Special Thanks
+
+VEM aims to integrate with various amazing tools and plugins in the Vim/Neovim ecosystem. We would like to express our gratitude to the following projects:
+
+### Plugin Managers
+- [vim-plug](https://github.com/junegunn/vim-plug) - Minimalist Vim Plugin Manager
+- [packer.nvim](https://github.com/wbthomason/packer.nvim) - A use-package inspired plugin manager for Neovim
+- [lazy.nvim](https://github.com/folke/lazy.nvim) - Modern plugin manager for Neovim
+- [dein.vim](https://github.com/Shougo/dein.vim) - Dark powered Vim/Neovim plugin manager
+- [paq-nvim](https://github.com/savq/paq-nvim) - Neovim package manager
+- [jetpack.vim](https://github.com/tani/vim-jetpack) - Lightning-fast plugin manager for Vim/Neovim
+
+### AI Tools
+- [GitHub Copilot](https://github.com/features/copilot) - AI pair programmer
+- [ChatGPT](https://chat.openai.com/) - Conversational AI assistant
+- [Codeium](https://codeium.com/) - Free AI code completion tool
+- [Tabnine](https://www.tabnine.com/) - AI code completion assistant
+- [Amazon CodeWhisperer](https://aws.amazon.com/codewhisperer/) - AI-powered code suggestions
+- [Claude Code](https://claude.ai/) - Anthropic's AI assistant
+- [Gemini Code Assist](https://cloud.google.com/gemini/docs/codeassist/overview) - Google's AI coding assistant
+- [Cursor](https://cursor.sh/) - AI-powered code editor
+- [Continue](https://continue.dev/) - Open-source AI code assistant
+- [Aider](https://aider.chat/) - AI pair programming in terminal
+- [Sourcegraph Cody](https://sourcegraph.com/cody) - AI coding assistant
+
+### Color Schemes
+- [Gruvbox](https://github.com/morhetz/gruvbox) - Retro groove color scheme
+- [Nord](https://www.nordtheme.com/) - Arctic, north-bluish color palette
+- [Dracula](https://draculatheme.com/) - Dark theme for many applications
+- [TokyoNight](https://github.com/folke/tokyonight.nvim) - Clean, dark Neovim theme
+- [Catppuccin](https://github.com/catppuccin/catppuccin) - Soothing pastel theme
+- [OneDark](https://github.com/joshdick/onedark.vim) - Atom's iconic One Dark theme
+- [Solarized](https://ethanschoonover.com/solarized/) - Precision colors for machines and people
+- [Monokai](https://monokai.pro/) - Iconic color scheme for developers
+
+### Development Tools
+- [Exuberant Ctags](https://ctags.sourceforge.net/) - Programming language indexing tool
+- [Universal Ctags](https://ctags.io/) - Modern maintained version of Ctags
+- [LSP (Language Server Protocol)](https://microsoft.github.io/language-server-protocol/) - Language intelligence protocol
+- [CoC.nvim](https://github.com/neoclide/coc.nvim) - Intellisense engine for Vim/Neovim
+
+And many more themes and plugins that enhance the Vim/Neovim experience!
+
 ## Features
 
 - 🚀 **Fast**: Lightweight and fast environment switching powered by Rust
