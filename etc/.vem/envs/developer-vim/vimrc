@@ -1,0 +1,132 @@
+" Developer Vim Configuration with vim-plug
+" Advanced configuration for software development
+
+" Install vim-plug if not found
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+\| endif
+
+" Plugin configuration
+call plug#begin('~/.vim/plugged')
+
+" File explorer
+Plug 'preservim/nerdtree'
+
+" Fuzzy finder
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+" Git integration
+Plug 'tpope/vim-fugitive'
+
+" Status line
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" Color schemes
+Plug 'morhetz/gruvbox'
+Plug 'dracula/vim', { 'as': 'dracula' }
+
+" Syntax highlighting
+Plug 'sheerun/vim-polyglot'
+
+" Auto completion (if using Vim 8+)
+if has('patch-8.1.1719')
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+endif
+
+" Code commenting
+Plug 'tpope/vim-commentary'
+
+" Surround text objects
+Plug 'tpope/vim-surround'
+
+" Auto pairs for brackets
+Plug 'jiangmiao/auto-pairs'
+
+call plug#end()
+
+" Basic settings
+syntax on
+set number
+set relativenumber
+set autoindent
+set smartindent
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+set showmatch
+set mouse=a
+set ruler
+set encoding=utf-8
+set backspace=indent,eol,start
+
+" Color scheme
+set background=dark
+colorscheme gruvbox
+
+" Airline configuration
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='gruvbox'
+
+" NERDTree configuration
+map <C-n> :NERDTreeToggle<CR>
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+
+" FZF configuration
+map <C-p> :Files<CR>
+map <C-f> :Rg<CR>
+
+" CoC configuration (if available)
+if exists('g:loaded_coc')
+    " Use tab for trigger completion
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? "\<C-n>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    " Use <c-space> to trigger completion
+    inoremap <silent><expr> <c-space> coc#refresh()
+
+    " GoTo code navigation
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
+endif
+
+" File backup settings
+set backup
+set backupdir=~/.vim/backup//
+set swapfile
+set directory=~/.vim/swap//
+set undofile
+set undodir=~/.vim/undo//
+
+" Create backup directories if they don't exist
+if !isdirectory($HOME."/.vim/backup")
+    call mkdir($HOME."/.vim/backup", "p")
+endif
+if !isdirectory($HOME."/.vim/swap")
+    call mkdir($HOME."/.vim/swap", "p")
+endif
+if !isdirectory($HOME."/.vim/undo")
+    call mkdir($HOME."/.vim/undo", "p")
+endif

@@ -54,18 +54,38 @@ And many more themes and plugins that enhance the Vim/Neovim experience!
 ## Features
 
 - 🚀 **Fast**: Lightweight and fast environment switching powered by Rust
-- 🔧 **Flexible**: Manage multiple Vim configuration profiles
+- 🔧 **Flexible**: Manage multiple Vim configuration profiles with TOML-based configuration
 - 📁 **Organized**: Keep each environment isolated to prevent configuration conflicts
-- 🎯 **Simple**: Intuitive command-line interface
+- 🎯 **Simple**: Intuitive command-line interface with comprehensive ctags management
+- 🤖 **AI-Enhanced**: Built-in support for AI coding assistants (GitHub Copilot, ChatGPT, Codeium)
+- 🔌 **Plugin Management**: Support for multiple plugin managers (vim-plug, lazy.nvim, packer, etc.)
+- 🏷️ **Smart Tagging**: Advanced ctags management with multi-repository support
+- 🌈 **Theme Support**: Extensive color scheme and theme management
+- 🔍 **Multi-Repository**: Cross-repository code navigation and tagging
 
 ## Documentation
 
 📖 **[Read the full documentation](https://ryo-arima.github.io/vem/)**
 
-- [Quick Start Guide](https://ryo-arima.github.io/vem/quick-start.html)
-- [Installation Instructions](https://ryo-arima.github.io/vem/installation.html)
-- [Command Reference](https://ryo-arima.github.io/vem/commands.html)
-- [Architecture Overview](https://ryo-arima.github.io/vem/architecture.html)
+### Getting Started
+- [Quick Start Guide](https://ryo-arima.github.io/vem/quick-start.html) - Get up and running in 5 minutes
+- [Installation Instructions](https://ryo-arima.github.io/vem/installation.html) - Platform-specific installation guides
+
+### User Guides  
+- [Environment Management](https://ryo-arima.github.io/vem/environment-structure.html) - Managing Vim/Neovim environments
+- [Command Reference](https://ryo-arima.github.io/vem/commands.html) - Complete command documentation
+- [Configuration Guide](https://ryo-arima.github.io/vem/configuration.html) - TOML configuration reference
+- [Ctags Management](https://ryo-arima.github.io/vem/commands/ctags.html) - Advanced ctags features
+
+### Advanced Topics
+- [AI Integration Guide](https://ryo-arima.github.io/vem/ai-integration.html) - Setting up AI coding assistants
+- [Multi-Repository Setup](https://ryo-arima.github.io/vem/multi-repo.html) - Managing multiple codebases
+- [Plugin Manager Guide](https://ryo-arima.github.io/vem/plugin-managers.html) - Using different plugin managers
+
+### Developer Resources
+- [Architecture Overview](https://ryo-arima.github.io/vem/architecture.html) - Technical architecture details
+- [Contributing Guide](https://ryo-arima.github.io/vem/contributing.html) - How to contribute to VEM
+- [API Reference](https://ryo-arima.github.io/vem/api.html) - Internal API documentation
 
 ## Installation
 
@@ -154,7 +174,7 @@ sudo cp target/release/vem /usr/local/bin/
 
 ## Usage
 
-### Basic Commands
+### Environment Management
 
 ```bash
 # Create a new environment
@@ -173,43 +193,185 @@ vem current
 vem remove <environment-name>
 ```
 
+### Ctags Management
+
+VEM provides powerful ctags management for efficient code navigation across multiple repositories:
+
+```bash
+# Generate ctags for a repository
+vem generate ctags <repository> [options]
+
+# Update existing ctags
+vem update ctags <repository> [options]
+
+# Delete ctags for a repository
+vem delete ctags <repository> [options]
+
+# List all ctags
+vem list ctags
+
+# Clean all ctags files
+vem clean ctags
+```
+
 ### Examples
 
+#### Basic Environment Setup
 ```bash
 # Create a development environment
 vem create development
 
-# Create a writing environment
-vem create writing
+# Create an AI-enhanced environment
+vem create ai-development
 
 # List all environments
 vem list
-# development
-# writing
+# basic-vim
+# developer-vim  
+# modern-nvim
+# ai-development
 
-# Switch to development environment
-vem switch development
+# Switch to AI development environment
+vem switch ai-development
 
 # Check current environment
 vem current
-# development
+# ai-development
 ```
 
-## Environment Structure
+#### Advanced Ctags Usage
+```bash
+# Generate ctags for main project
+vem generate ctags main_project
 
-Each Vim environment is managed as follows:
+# Generate ctags for ML models with AI enhancement
+vem generate ctags ml_models --ai-enhance
+
+# Update shared libraries ctags
+vem update ctags shared_libs --languages=python,rust
+
+# List all ctags with status
+vem list ctags
+# Name            Repository   Tag File           Size    Status
+# ai_comprehensive ml_models   ai_comprehensive   2.1MB   Active
+# copilot_enhanced ai_project  copilot_enhanced   1.8MB   Active
+
+# Clean all ctags files (with backup)
+vem clean ctags
+```
+
+## Sample Environments
+
+VEM comes with pre-configured sample environments to get you started quickly:
+
+### 📝 **basic-vim**
+- **Purpose**: Minimal Vim setup for beginners
+- **Features**: Essential settings, syntax highlighting, line numbers
+- **Plugin Manager**: None (pure Vim)
+- **Best For**: Learning Vim, lightweight editing
+
+### 🛠️ **developer-vim** 
+- **Purpose**: Professional development environment
+- **Features**: vim-plug, NERDTree, FZF, CoC.nvim, Git integration
+- **Plugin Manager**: vim-plug
+- **Theme**: Gruvbox
+- **Ctags**: Multi-repository support with shared libraries
+- **Best For**: Serious development work
+
+### 🚀 **modern-nvim**
+- **Purpose**: Modern Neovim with LSP and Treesitter
+- **Features**: lazy.nvim, Neo-tree, Telescope, Mason LSP, completion
+- **Plugin Manager**: lazy.nvim
+- **Theme**: TokyoNight
+- **Ctags**: Workspace-focused with LSP integration
+- **Best For**: Modern development workflow
+
+### 🤖 **ai-development**
+- **Purpose**: AI-enhanced development environment
+- **Features**: GitHub Copilot, ChatGPT, Codeium, comprehensive LSP
+- **Plugin Manager**: lazy.nvim
+- **Theme**: Catppuccin
+- **Ctags**: AI-optimized cross-repository tagging
+- **Best For**: AI-assisted coding, ML/Data Science
+
+Each environment is fully configured and ready to use with its own `vem.toml` configuration file.
+
+## Configuration Structure
+
+VEM uses a sophisticated configuration system based on TOML files:
 
 ```
-~/.vem/
-├── environments/
-│   ├── development/
-│   │   ├── .vimrc
-│   │   └── .vim/
-│   └── writing/
-│       ├── .vimrc
-│       └── .vim/
-└── current -> environments/development
+etc/.vem/
+├── envs/                          # Environment configurations
+│   ├── basic-vim/
+│   │   ├── vimrc                  # Vim configuration
+│   │   └── vem.toml              # Environment settings
+│   ├── developer-vim/
+│   │   ├── vimrc
+│   │   └── vem.toml
+│   ├── modern-nvim/
+│   │   ├── init.lua              # Neovim configuration
+│   │   ├── lua/plugins/
+│   │   └── vem.toml
+│   └── ai-development/
+│       ├── init.lua
+│       └── vem.toml
+└── global/                       # Shared configurations
+    ├── vim/                      # Global Vim settings
+    ├── nvim/                     # Global Neovim settings
+    ├── scripts/                  # Shared VimScript functions
+    ├── themes/                   # Color schemes
+    └── ai-tools/                 # AI tool configurations
 ```
+
+### vem.toml Configuration
+
+Each environment's `vem.toml` file contains:
+
+- **Environment metadata** (name, description, type)
+- **Plugin manager selection** (vim-plug, lazy.nvim, packer, etc.)
+- **Package management** with dependency tracking
+- **Ctags configuration** with multi-repository support  
+- **Theme and UI settings**
+- **Keymapping definitions**
+- **LSP and AI tool integrations**
+
+## Advanced Features
+
+### 🏷️ Multi-Repository Ctags Management
+
+VEM provides sophisticated ctags management across multiple repositories:
+
+- **Cross-Repository Navigation**: Generate unified tags across related projects
+- **Smart Filtering**: AI-enhanced tag relevance and filtering
+- **Repository Sync**: Automatic synchronization of external repositories
+- **Context-Aware Tagging**: Different tag configurations for different purposes
+
+### 🤖 AI Integration
+
+Built-in support for modern AI coding assistants:
+
+- **GitHub Copilot**: Native integration with enhanced context
+- **ChatGPT**: Direct access to conversational AI assistance
+- **Codeium**: Free alternative with smart completion
+- **Context Enhancement**: AI tools receive rich context from ctags
+
+### 🔌 Plugin Manager Ecosystem
+
+Support for all major Vim/Neovim plugin managers:
+
+- **Vim**: vim-plug, pathogen, vundle, dein
+- **Neovim**: lazy.nvim, packer.nvim, paq-nvim
+- **Auto-Configuration**: Automatic plugin installation and updates
+- **Dependency Management**: Smart package dependency resolution
+
+### 🌈 Theme Management
+
+Comprehensive color scheme and theme support:
+
+- **30+ Built-in Themes**: Gruvbox, Nord, Dracula, TokyoNight, Catppuccin, etc.
+- **Environment-Specific**: Different themes for different purposes
+- **Plugin Integration**: Automatic theme configuration for status lines and UI
 
 ## Project Architecture
 

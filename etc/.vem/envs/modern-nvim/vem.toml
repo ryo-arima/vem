@@ -1,0 +1,286 @@
+# VEM Configuration for Modern Neovim Environment
+# Modern Neovim setup with lazy.nvim and Lua-based plugins
+
+[environment]
+name = "modern-nvim"
+description = "Modern Neovim environment with lazy.nvim and full LSP support"
+type = "neovim"
+version = "1.0.0"
+author = "VEM Team"
+
+[editor]
+type = "neovim"
+config_file = "init.lua"
+global_configs = [
+    "global/nvim/common-settings.lua",
+    "global/nvim/keymaps.lua"
+]
+
+[features]
+syntax_highlighting = true
+line_numbers = true
+relative_numbers = true
+search_highlighting = true
+auto_indent = true
+smart_indent = true
+mouse_support = true
+folding = true
+completion = true
+treesitter = true
+
+[plugins]
+enabled = true
+manager = "lazy.nvim"
+auto_install = true
+
+[plugin_managers]
+# Plugin manager selection (only one should be true)
+vim-plug = false
+pathogen = false
+vundle = false
+dein = false
+lazy = true
+packer = false
+paq = false
+
+# Plugin manager configurations
+[plugin_managers.configs]
+
+[plugin_managers.configs.lazy]
+url = "https://github.com/folke/lazy.nvim.git"
+install_path = "vim.fn.stdpath('data') .. '/lazy/lazy.nvim'"
+config_setup = "require('lazy').setup"
+packages = [
+    { name = "folke/tokyonight.nvim", description = "Tokyo Night color scheme", priority = 1000 },
+    { name = "nvim-neo-tree/neo-tree.nvim", description = "File explorer", dependencies = ["nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim"] },
+    { name = "nvim-telescope/telescope.nvim", description = "Fuzzy finder", dependencies = ["nvim-lua/plenary.nvim"] },
+    { name = "nvim-treesitter/nvim-treesitter", description = "Syntax highlighting", build = ":TSUpdate" },
+    { name = "neovim/nvim-lspconfig", description = "LSP configurations" },
+    { name = "williamboman/mason.nvim", description = "LSP installer" },
+    { name = "williamboman/mason-lspconfig.nvim", description = "Mason LSP bridge" },
+    { name = "hrsh7th/nvim-cmp", description = "Completion engine" },
+    { name = "hrsh7th/cmp-nvim-lsp", description = "LSP completion source" },
+    { name = "L3MON4D3/LuaSnip", description = "Snippet engine" },
+    { name = "nvim-lualine/lualine.nvim", description = "Status line", dependencies = ["nvim-tree/nvim-web-devicons"] },
+    { name = "lewis6991/gitsigns.nvim", description = "Git decorations" },
+    { name = "windwp/nvim-autopairs", description = "Auto pairs" },
+    { name = "numToStr/Comment.nvim", description = "Comment plugin" },
+    { name = "folke/which-key.nvim", description = "Key mapping helper" }
+]
+
+[plugin_managers.configs.packer]
+url = "https://github.com/wbthomason/packer.nvim"
+install_path = "vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'"
+config_setup = "require('packer').startup"
+packages = []
+
+[plugin_managers.configs.paq]
+url = "https://github.com/savq/paq-nvim.git"
+install_path = "vim.fn.stdpath('data') .. '/site/pack/paqs/start/paq-nvim'"
+config_setup = "require('paq')"
+packages = []
+
+[packages]
+# System package dependencies
+system = [
+    { name = "fzf", package_managers = { brew = "fzf", apt = "fzf", yum = "fzf" } },
+    { name = "rg", package_managers = { brew = "ripgrep", apt = "ripgrep", yum = "ripgrep" } },
+    { name = "ctags", package_managers = { brew = "universal-ctags", apt = "universal-ctags", yum = "ctags" } },
+    { name = "nodejs", package_managers = { brew = "node", apt = "nodejs npm", yum = "nodejs npm" } }
+]
+
+[ctags]
+enabled = true
+executable = "ctags"
+global_config_file = "~/.ctags"
+auto_generate = true
+update_on_save = true
+
+# Global ctags settings for Neovim
+[ctags.global]
+languages = ["c", "cpp", "python", "javascript", "typescript", "rust", "go", "vim", "lua"]
+exclude_patterns = [".git", "node_modules", "target", "build", "dist", "__pycache__", ".next"]
+custom_options = ["--recurse=yes", "--exclude=.git", "--exclude=node_modules", "--exclude=target"]
+
+# Multiple repository management for Neovim development
+[ctags.repositories]
+
+[ctags.repositories.current_project]
+name = "current_project"
+description = "Current development project"
+path = "."
+remote_url = ""
+branch = "main"
+enabled = true
+auto_sync = true
+priority = 1
+
+[ctags.repositories.nvim_config]
+name = "nvim_config"
+description = "Personal Neovim configuration"
+path = "~/.config/nvim"
+remote_url = "git@github.com:user/nvim-config.git"
+branch = "main"
+enabled = true
+auto_sync = false
+priority = 2
+
+[ctags.repositories.nvim_plugins]
+name = "nvim_plugins"
+description = "Neovim plugin repositories"
+path = "~/.local/share/nvim/lazy"
+remote_url = ""
+branch = ""
+enabled = false
+auto_sync = false
+priority = 3
+
+[ctags.repositories.dotfiles]
+name = "dotfiles"
+description = "Personal dotfiles repository"
+path = "~/dotfiles"
+remote_url = "git@github.com:user/dotfiles.git"
+branch = "main"
+enabled = false
+auto_sync = false
+priority = 4
+
+# Multiple tag configurations optimized for modern development
+[ctags.tags]
+
+[ctags.tags.workspace]
+name = "workspace"
+description = "Current workspace/project tags"
+tag_file = "workspace_tags"
+repositories = ["current_project"]
+source_dirs = ["."]
+languages = ["lua", "python", "javascript", "typescript", "rust", "go", "c", "cpp"]
+exclude_patterns = [".git", "node_modules", "target", "build", "dist", ".next"]
+custom_options = ["--recurse=yes", "--sort=yes", "--lua-kinds=+f"]
+auto_generate = true
+project_root_markers = [".git", "init.lua", "package.json", "Cargo.toml", "pyproject.toml"]
+
+[ctags.tags.nvim_ecosystem]
+name = "nvim_ecosystem"
+description = "Complete Neovim ecosystem tags"
+tag_file = "nvim_ecosystem_tags"
+repositories = ["nvim_config", "nvim_plugins", "dotfiles"]
+source_dirs = ["."]
+languages = ["lua", "vim"]
+exclude_patterns = ["lazy-lock.json", ".git", "doc", "test"]
+custom_options = ["--recurse=yes", "--sort=yes", "--lua-kinds=+f"]
+auto_generate = true
+
+[ctags.tags.plugins]
+name = "plugins"
+description = "Neovim plugins tags"
+tag_file = "plugins_tags"
+source_dirs = ["~/.local/share/nvim/lazy"]
+languages = ["lua", "vim"]
+exclude_patterns = [".git", "doc", "test"]
+custom_options = ["--recurse=yes", "--sort=yes"]
+auto_generate = false
+
+[ctags.tags.lsp]
+name = "lsp"
+description = "LSP server configurations"
+tag_file = "lsp_tags"
+source_dirs = ["~/.local/share/nvim/mason"]
+languages = ["lua", "python", "javascript", "typescript"]
+exclude_patterns = [".git", "node_modules", "__pycache__"]
+custom_options = ["--recurse=yes", "--sort=yes"]
+auto_generate = false
+
+# VEM command configuration for Neovim ctags management
+[ctags.commands]
+# Command: vem generate ctags <repo> <option>
+generate_command = "ctags"
+generate_options = ["--recurse=yes", "--sort=yes", "--fields=+iaS", "--extra=+q", "--lua-kinds=+f"]
+
+# Command: vem update ctags <repo> <option>
+update_command = "ctags" 
+update_options = ["--recurse=yes", "--sort=yes", "--append=no", "--lua-kinds=+f"]
+
+# Command: vem delete ctags <repo> <option>
+delete_command = "rm"
+delete_options = ["-f"]
+
+# Command: vem list ctags
+list_format = "json"  # Neovim friendly format
+list_fields = ["name", "repository", "tag_file", "last_updated", "size", "lsp_integrated"]
+
+# Command: vem clean ctags  
+clean_backup = true
+clean_confirm = false  # Less confirmation for modern workflow
+
+# Integration with Neovim LSP
+[ctags.lsp_integration]
+enabled = true
+auto_fallback = true  # Use ctags when LSP unavailable
+telescope_integration = true
+nvim_tree_integration = true
+
+# No gutentags for Neovim (using native LSP)
+[ctags.gutentags]
+enabled = false
+
+[theme]
+name = "tokyonight"
+variant = "night"
+background = "dark"
+
+[keymaps]
+leader = " "
+custom_maps = [
+    { key = "<C-n>", action = ":Neotree toggle<CR>", mode = "n" },
+    { key = "<C-p>", action = ":Telescope find_files<CR>", mode = "n" },
+    { key = "<C-f>", action = ":Telescope live_grep<CR>", mode = "n" },
+    { key = "gd", action = "vim.lsp.buf.definition", mode = "n", type = "lua" },
+    { key = "gr", action = "vim.lsp.buf.references", mode = "n", type = "lua" },
+    { key = "K", action = "vim.lsp.buf.hover", mode = "n", type = "lua" }
+]
+
+[lsp]
+enabled = true
+provider = "native"
+auto_install = true
+languages = [
+    "lua_ls",
+    "rust_analyzer", 
+    "pyright",
+    "tsserver",
+    "jsonls",
+    "html",
+    "cssls"
+]
+
+[ai_tools]
+enabled = false
+
+[treesitter]
+enabled = true
+auto_install = true
+languages = [
+    "c", "lua", "vim", "vimdoc", "query",
+    "python", "javascript", "typescript", 
+    "rust", "go", "json", "html", "css"
+]
+
+[completion]
+enabled = true
+sources = ["nvim_lsp", "luasnip", "buffer", "path"]
+snippet_engine = "luasnip"
+
+[git]
+enabled = true
+show_changes = true
+signs = true
+
+[performance]
+swap_files = false
+backup_files = false
+undo_levels = 10000
+update_time = 250
+
+[compatibility]
+neovim_version = "0.8.0+"

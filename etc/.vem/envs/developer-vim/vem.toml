@@ -1,0 +1,297 @@
+# VEM Configuration for Developer Vim Environment
+# Advanced Vim setup with plugins and development tools
+
+[environment]
+name = "developer-vim"
+description = "Developer-focused Vim environment with vim-plug and essential plugins"
+type = "vim"
+version = "1.0.0"
+author = "VEM Team"
+
+[editor]
+type = "vim"
+config_file = "vimrc"
+global_configs = [
+    "global/vim/common-settings.vim",
+    "global/scripts/developer-functions.vim"
+]
+
+[features]
+syntax_highlighting = true
+line_numbers = true
+relative_numbers = true
+search_highlighting = true
+auto_indent = true
+smart_indent = true
+mouse_support = true
+folding = true
+completion = true
+
+[plugins]
+enabled = true
+manager = "vim-plug"
+auto_install = true
+
+[plugin_managers]
+# Plugin manager selection (only one should be true)
+vim-plug = true
+pathogen = false
+vundle = false
+dein = false
+lazy = false
+packer = false
+paq = false
+
+# Plugin manager configurations
+[plugin_managers.configs]
+
+[plugin_managers.configs.vim-plug]
+url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+install_path = "~/.vim/autoload/plug.vim"
+config_block_start = "call plug#begin('~/.vim/plugged')"
+config_block_end = "call plug#end()"
+install_command = ":PlugInstall"
+update_command = ":PlugUpdate"
+clean_command = ":PlugClean"
+packages = [
+    { name = "preservim/nerdtree", description = "File system explorer", config = "map <C-n> :NERDTreeToggle<CR>" },
+    { name = "junegunn/fzf", description = "Fuzzy finder", build = "./install --all" },
+    { name = "junegunn/fzf.vim", description = "Vim integration for FZF" },
+    { name = "neoclide/coc.nvim", description = "Language server client", build = "npm ci" },
+    { name = "tpope/vim-fugitive", description = "Git integration" },
+    { name = "airblade/vim-gitgutter", description = "Git diff in gutter" },
+    { name = "vim-airline/vim-airline", description = "Status line" },
+    { name = "vim-airline/vim-airline-themes", description = "Airline themes" },
+    { name = "jiangmiao/auto-pairs", description = "Auto close brackets" },
+    { name = "tpope/vim-commentary", description = "Comment/uncomment code" },
+    { name = "tpope/vim-surround", description = "Surround text objects" },
+    { name = "ludovicchabant/vim-gutentags", description = "Ctags integration" },
+    { name = "morhetz/gruvbox", description = "Gruvbox color scheme" }
+]
+
+[plugin_managers.configs.pathogen]
+url = "https://tpo.pe/pathogen.vim"
+install_path = "~/.vim/autoload/pathogen.vim"
+config_line = "execute pathogen#infect()"
+packages = []
+
+[plugin_managers.configs.vundle]
+url = "https://github.com/VundleVim/Vundle.vim.git"
+install_path = "~/.vim/bundle/Vundle.vim"
+config_block_start = "call vundle#begin()"
+config_block_end = "call vundle#end()"
+install_command = ":PluginInstall"
+update_command = ":PluginUpdate"
+clean_command = ":PluginClean"
+packages = []
+
+[plugin_managers.configs.dein]
+url = "https://github.com/Shougo/dein.vim"
+install_path = "~/.vim/dein"
+config_block_start = "call dein#begin('~/.vim/dein')"
+config_block_end = "call dein#end()"
+install_command = "call dein#install()"
+update_command = "call dein#update()"
+packages = []
+
+[packages]
+# System package dependencies
+system = [
+    { name = "fzf", package_managers = { brew = "fzf", apt = "fzf", yum = "fzf" } },
+    { name = "ag", package_managers = { brew = "the_silver_searcher", apt = "silversearcher-ag", yum = "the_silver_searcher" } },
+    { name = "ctags", package_managers = { brew = "universal-ctags", apt = "universal-ctags", yum = "ctags" } },
+    { name = "nodejs", package_managers = { brew = "node", apt = "nodejs npm", yum = "nodejs npm" } }
+]
+
+[ctags]
+enabled = true
+executable = "ctags"
+global_config_file = "~/.ctags"
+auto_generate = true
+update_on_save = true
+
+# Global ctags settings
+[ctags.global]
+languages = ["c", "cpp", "python", "javascript", "typescript", "rust", "go", "vim", "lua"]
+exclude_patterns = [".git", "node_modules", "target", "build", "dist", "__pycache__"]
+custom_options = ["--recurse=yes", "--exclude=.git", "--exclude=node_modules"]
+
+# Multiple repository management
+[ctags.repositories]
+
+[ctags.repositories.main_project]
+name = "main_project"
+description = "Main development project"
+path = "."
+remote_url = ""
+branch = "main"
+enabled = true
+auto_sync = true
+priority = 1
+
+[ctags.repositories.shared_libs]
+name = "shared_libs"
+description = "Shared libraries and utilities"
+path = "../shared-libs"
+remote_url = "git@github.com:company/shared-libs.git"
+branch = "main"
+enabled = true
+auto_sync = false
+priority = 2
+
+[ctags.repositories.api_definitions]
+name = "api_definitions"
+description = "API definitions and schemas"
+path = "../api-definitions"
+remote_url = "git@github.com:company/api-definitions.git"
+branch = "main"
+enabled = false
+auto_sync = false
+priority = 3
+
+[ctags.repositories.external_deps]
+name = "external_deps"
+description = "External dependencies source code"
+path = "~/.vem/cache/external-deps"
+remote_url = ""
+branch = ""
+enabled = false
+auto_sync = false
+priority = 4
+
+# Multiple tag configurations for different purposes
+[ctags.tags]
+
+[ctags.tags.project]
+name = "project"
+description = "Main project tags"
+tag_file = "tags"
+repositories = ["main_project"]
+source_dirs = ["."]
+languages = ["c", "cpp", "python", "javascript", "typescript", "rust", "go"]
+exclude_patterns = [".git", "node_modules", "target", "build", "dist"]
+custom_options = ["--recurse=yes", "--sort=yes"]
+auto_generate = true
+project_root_markers = [".git", ".root", ".svn", ".hg", ".project"]
+
+[ctags.tags.system]
+name = "system"
+description = "System libraries and frameworks"
+tag_file = "system_tags"
+source_dirs = ["/usr/include", "/usr/local/include"]
+languages = ["c", "cpp"]
+exclude_patterns = []
+custom_options = ["--recurse=yes", "--sort=yes", "--c-kinds=+p"]
+auto_generate = false
+
+[ctags.tags.shared_libraries]
+name = "shared_libraries"
+description = "Shared libraries across repositories"
+tag_file = "shared_tags"
+repositories = ["shared_libs", "main_project"]
+source_dirs = ["lib", "libs", "shared", "common"]
+languages = ["c", "cpp", "python", "javascript", "typescript", "rust", "go"]
+exclude_patterns = [".git", "test", "tests", "spec"]
+custom_options = ["--recurse=yes", "--sort=yes"]
+auto_generate = true
+
+[ctags.tags.api_schemas]
+name = "api_schemas"
+description = "API definitions from multiple repositories"
+tag_file = "api_tags"
+repositories = ["api_definitions", "main_project"]
+source_dirs = ["api", "schema", "openapi", "swagger"]
+languages = ["yaml", "json", "typescript", "python"]
+exclude_patterns = [".git", "test", "spec"]
+custom_options = ["--recurse=yes", "--sort=yes"]
+auto_generate = false
+
+[ctags.tags.cross_repo]
+name = "cross_repo"
+description = "Cross-repository comprehensive tags"
+tag_file = "cross_repo_tags"
+repositories = ["main_project", "shared_libs", "api_definitions"]
+source_dirs = ["."]
+languages = ["c", "cpp", "python", "javascript", "typescript", "rust", "go", "yaml", "json"]
+exclude_patterns = [".git", "node_modules", "target", "build", "dist", "test", "tests"]
+custom_options = ["--recurse=yes", "--sort=yes", "--fields=+iaS", "--extra=+q"]
+auto_generate = false
+
+[ctags.tags.dependencies]
+name = "dependencies"
+description = "External dependencies and libraries"
+tag_file = "deps_tags"
+repositories = ["external_deps"]
+source_dirs = ["node_modules", "vendor", "target/debug/deps"]
+languages = ["javascript", "typescript", "rust"]
+exclude_patterns = [".git", "test", "tests", "spec"]
+custom_options = ["--recurse=yes", "--sort=yes"]
+auto_generate = false
+
+# VEM command configuration for ctags management
+[ctags.commands]
+# Command: vem generate ctags <repo> <option>
+generate_command = "ctags"
+generate_options = ["--recurse=yes", "--sort=yes", "--fields=+iaS", "--extra=+q"]
+
+# Command: vem update ctags <repo> <option> 
+update_command = "ctags"
+update_options = ["--recurse=yes", "--sort=yes", "--append=no"]
+
+# Command: vem delete ctags <repo> <option>
+delete_command = "rm"
+delete_options = ["-f"]
+
+# Command: vem list ctags
+list_format = "table"  # table, json, yaml
+list_fields = ["name", "repository", "tag_file", "last_updated", "size", "status"]
+
+# Command: vem clean ctags
+clean_backup = true
+clean_confirm = true
+
+# Gutentags integration (if using vim-gutentags plugin)
+[ctags.gutentags]
+enabled = true
+project_root_markers = [".git", ".root", ".svn", ".hg", ".project", "Cargo.toml", "package.json", "pyproject.toml"]
+cache_dir = "~/.cache/tags"
+exclude_dirs = ["node_modules", "target", "build", "dist", ".git"]
+
+[theme]
+name = "gruvbox"
+background = "dark"
+airline_theme = "gruvbox"
+
+[keymaps]
+leader = " "
+custom_maps = [
+    { key = "<C-n>", action = ":NERDTreeToggle<CR>", mode = "n" },
+    { key = "<C-p>", action = ":FZF<CR>", mode = "n" },
+    { key = "<C-f>", action = ":Ag<CR>", mode = "n" },
+    { key = "gd", action = "<Plug>(coc-definition)", mode = "n" },
+    { key = "gr", action = "<Plug>(coc-references)", mode = "n" }
+]
+
+[lsp]
+enabled = true
+provider = "coc"
+languages = ["javascript", "typescript", "python", "rust", "go", "json"]
+
+[ai_tools]
+enabled = false
+
+[git]
+enabled = true
+show_changes = true
+fugitive_maps = true
+
+[performance]
+swap_files = false
+backup_files = true
+backup_dir = "~/.vim/backup"
+undo_levels = 10000
+update_time = 300
+
+[compatibility]
+vim_version = "8.0+"
+neovim_compatible = true
