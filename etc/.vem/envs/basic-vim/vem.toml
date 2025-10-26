@@ -1,0 +1,161 @@
+# VEM Configuration for Basic Vim Environment
+# Simple, minimal Vim setup for beginners
+
+[environment]
+name = "basic-vim"
+description = "Basic Vim environment with essential settings"
+type = "vim"
+version = "1.0.0"
+author = "VEM Team"
+
+[editor]
+type = "vim"
+config_file = "vimrc"
+global_configs = [
+    "global/vim/common-settings.vim"
+]
+
+[features]
+syntax_highlighting = true
+line_numbers = true
+search_highlighting = true
+auto_indent = true
+smart_indent = false
+mouse_support = true
+
+[plugins]
+enabled = false
+manager = "none"
+
+[plugin_managers]
+# Plugin manager selection (only one should be true)
+vim-plug = false
+pathogen = false
+vundle = false
+dein = false
+lazy = false
+packer = false
+paq = false
+
+# Plugin manager configurations
+[plugin_managers.configs]
+
+[plugin_managers.configs.vim-plug]
+url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+install_path = "~/.vim/autoload/plug.vim"
+config_block_start = "call plug#begin('~/.vim/plugged')"
+config_block_end = "call plug#end()"
+install_command = ":PlugInstall"
+update_command = ":PlugUpdate"
+clean_command = ":PlugClean"
+packages = []
+
+[plugin_managers.configs.pathogen]
+url = "https://tpo.pe/pathogen.vim"
+install_path = "~/.vim/autoload/pathogen.vim"
+config_line = "execute pathogen#infect()"
+packages = []
+
+[plugin_managers.configs.vundle]
+url = "https://github.com/VundleVim/Vundle.vim.git"
+install_path = "~/.vim/bundle/Vundle.vim"
+config_block_start = "call vundle#begin()"
+config_block_end = "call vundle#end()"
+install_command = ":PluginInstall"
+update_command = ":PluginUpdate"
+clean_command = ":PluginClean"
+packages = []
+
+[packages]
+# System package dependencies
+system = []
+
+[ctags]
+enabled = false
+executable = "ctags"
+global_config_file = "~/.ctags"
+auto_generate = false
+update_on_save = false
+
+# Global ctags settings (minimal for basic vim)
+[ctags.global]
+languages = ["vim", "c", "cpp", "python"]
+exclude_patterns = [".git", "node_modules", "target", "build"]
+custom_options = ["--recurse=yes"]
+
+# Simple repository management for basic usage
+[ctags.repositories]
+
+[ctags.repositories.current]
+name = "current"
+description = "Current working directory"
+path = "."
+remote_url = ""
+branch = ""
+enabled = true
+auto_sync = false
+priority = 1
+
+# Simple tag configuration for basic usage
+[ctags.tags]
+
+[ctags.tags.simple]
+name = "simple"
+description = "Simple project tags"
+tag_file = "tags"
+repositories = ["current"]
+source_dirs = ["."]
+languages = ["vim", "c", "cpp", "python", "shell"]
+exclude_patterns = [".git", "*.swp", "*.tmp"]
+custom_options = ["--recurse=yes", "--sort=yes"]
+auto_generate = false
+project_root_markers = [".git", "Makefile", "README*"]
+
+# VEM command configuration for basic ctags management
+[ctags.commands]
+# Command: vem generate ctags <repo> <option>
+generate_command = "ctags"
+generate_options = ["--recurse=yes", "--sort=yes"]
+
+# Command: vem update ctags <repo> <option>
+update_command = "ctags"
+update_options = ["--recurse=yes", "--sort=yes", "--append=no"]
+
+# Command: vem delete ctags <repo> <option>
+delete_command = "rm"
+delete_options = ["-f"]
+
+# Command: vem list ctags
+list_format = "simple"  # Simple text format
+list_fields = ["name", "tag_file", "last_updated"]
+
+# Command: vem clean ctags
+clean_backup = true
+clean_confirm = true  # Always confirm for basic users
+
+# Gutentags disabled for basic setup
+[ctags.gutentags]
+enabled = false
+
+[theme]
+name = "default"
+background = "dark"
+
+[keymaps]
+leader = " "
+custom_maps = []
+
+[lsp]
+enabled = false
+
+[ai_tools]
+enabled = false
+
+[performance]
+swap_files = false
+backup_files = false
+undo_levels = 1000
+
+[compatibility]
+vim_version = "7.4+"
+neovim_compatible = true

@@ -1,0 +1,59 @@
+" Basic Vim Configuration
+" This is a minimal Vim configuration for beginners
+
+" Enable syntax highlighting
+syntax on
+
+" Show line numbers
+set number
+
+" Enable auto-indentation
+set autoindent
+set smartindent
+
+" Set tab width
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
+" Enable search highlighting
+set hlsearch
+set incsearch
+
+" Show matching brackets
+set showmatch
+
+" Enable mouse support
+set mouse=a
+
+" Set color scheme to default dark
+set background=dark
+
+" Show cursor position
+set ruler
+
+" Enable file type detection
+filetype on
+filetype plugin on
+filetype indent on
+
+" Set encoding
+set encoding=utf-8
+
+" Show current mode
+set showmode
+
+" Enable backspace over everything
+set backspace=indent,eol,start
+
+" Keep backup files in a separate directory
+set backup
+set backupdir=~/.vim/backup//
+
+" Keep swap files in a separate directory
+set swapfile
+set directory=~/.vim/swap//
+
+" Keep undo files
+set undofile
+set undodir=~/.vim/undo//

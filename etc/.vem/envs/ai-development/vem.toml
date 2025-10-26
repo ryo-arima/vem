@@ -1,0 +1,378 @@
+# VEM Configuration for AI-Enhanced Development Environment
+# Neovim setup with AI tools integration (Copilot, ChatGPT, Codeium)
+
+[environment]
+name = "ai-development"
+description = "AI-enhanced development environment with multiple AI coding assistants"
+type = "neovim"
+version = "1.0.0"
+author = "VEM Team"
+
+[editor]
+type = "neovim"
+config_file = "init.lua"
+global_configs = [
+    "global/nvim/common-settings.lua",
+    "global/nvim/keymaps.lua",
+    "global/ai-tools/common-config.lua"
+]
+
+[features]
+syntax_highlighting = true
+line_numbers = true
+relative_numbers = true
+search_highlighting = true
+auto_indent = true
+smart_indent = true
+mouse_support = true
+folding = true
+completion = true
+treesitter = true
+
+[plugins]
+enabled = true
+manager = "lazy.nvim"
+auto_install = true
+
+[plugin_managers]
+# Plugin manager selection (only one should be true)
+vim-plug = false
+pathogen = false
+vundle = false
+dein = false
+lazy = true
+packer = false
+paq = false
+
+# Plugin manager configurations
+[plugin_managers.configs]
+
+[plugin_managers.configs.lazy]
+url = "https://github.com/folke/lazy.nvim.git"
+install_path = "vim.fn.stdpath('data') .. '/lazy/lazy.nvim'"
+config_setup = "require('lazy').setup"
+packages = [
+    # AI Tools
+    { name = "github/copilot.vim", description = "GitHub Copilot integration", category = "ai" },
+    { name = "jackMort/ChatGPT.nvim", description = "ChatGPT integration", category = "ai", dependencies = ["MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim"] },
+    { name = "Exafunction/codeium.vim", description = "Codeium AI completion", category = "ai" },
+    
+    # Theme and UI
+    { name = "catppuccin/nvim", description = "Catppuccin color scheme", priority = 1000, category = "theme" },
+    { name = "nvim-tree/nvim-tree.lua", description = "File explorer", dependencies = ["nvim-tree/nvim-web-devicons"], category = "ui" },
+    { name = "nvim-lualine/lualine.nvim", description = "Status line", dependencies = ["nvim-tree/nvim-web-devicons"], category = "ui" },
+    
+    # File Management
+    { name = "nvim-telescope/telescope.nvim", description = "Fuzzy finder", dependencies = ["nvim-lua/plenary.nvim"], category = "navigation" },
+    { name = "nvim-lua/plenary.nvim", description = "Lua utility library", category = "utility" },
+    
+    # Language Support
+    { name = "nvim-treesitter/nvim-treesitter", description = "Syntax highlighting", build = ":TSUpdate", category = "language" },
+    { name = "neovim/nvim-lspconfig", description = "LSP configurations", category = "language" },
+    { name = "williamboman/mason.nvim", description = "LSP installer", category = "language" },
+    { name = "williamboman/mason-lspconfig.nvim", description = "Mason LSP bridge", category = "language" },
+    
+    # Completion
+    { name = "hrsh7th/nvim-cmp", description = "Completion engine", category = "completion" },
+    { name = "hrsh7th/cmp-nvim-lsp", description = "LSP completion source", category = "completion" },
+    { name = "hrsh7th/cmp-buffer", description = "Buffer completion source", category = "completion" },
+    { name = "hrsh7th/cmp-path", description = "Path completion source", category = "completion" },
+    { name = "L3MON4D3/LuaSnip", description = "Snippet engine", category = "completion" },
+    { name = "saadparwaiz1/cmp_luasnip", description = "LuaSnip completion source", category = "completion" },
+    
+    # Git Integration
+    { name = "lewis6991/gitsigns.nvim", description = "Git decorations", category = "git" },
+    
+    # Utilities
+    { name = "windwp/nvim-autopairs", description = "Auto pairs", category = "utility" },
+    { name = "numToStr/Comment.nvim", description = "Comment plugin", category = "utility" }
+]
+
+[plugin_managers.configs.packer]
+url = "https://github.com/wbthomason/packer.nvim"
+install_path = "vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'"
+config_setup = "require('packer').startup"
+packages = []
+
+[packages]
+# System package dependencies for AI development
+system = [
+    { name = "fzf", package_managers = { brew = "fzf", apt = "fzf", yum = "fzf" } },
+    { name = "rg", package_managers = { brew = "ripgrep", apt = "ripgrep", yum = "ripgrep" } },
+    { name = "ctags", package_managers = { brew = "universal-ctags", apt = "universal-ctags", yum = "ctags" } },
+    { name = "nodejs", package_managers = { brew = "node", apt = "nodejs npm", yum = "nodejs npm" } },
+    { name = "python3", package_managers = { brew = "python@3.11", apt = "python3 python3-pip", yum = "python3 python3-pip" } },
+    { name = "git", package_managers = { brew = "git", apt = "git", yum = "git" } },
+    { name = "curl", package_managers = { brew = "curl", apt = "curl", yum = "curl" } }
+]
+
+[ctags]
+enabled = true
+executable = "ctags"
+global_config_file = "~/.ctags"
+auto_generate = true
+update_on_save = true
+ai_enhanced = true  # Enable AI-powered tag enhancement
+
+# Global ctags settings for AI development
+[ctags.global]
+languages = ["c", "cpp", "python", "javascript", "typescript", "rust", "go", "vim", "lua", "bash", "dockerfile", "yaml", "toml"]
+exclude_patterns = [".git", "node_modules", "target", "build", "dist", "__pycache__", ".next", ".venv", "venv"]
+custom_options = ["--recurse=yes", "--exclude=.git", "--exclude=node_modules", "--exclude=target", "--exclude=__pycache__"]
+
+# Multiple repository management for AI development
+[ctags.repositories]
+
+[ctags.repositories.ai_project]
+name = "ai_project"
+description = "Main AI/ML project"
+path = "."
+remote_url = ""
+branch = "main"
+enabled = true
+auto_sync = true
+priority = 1
+
+[ctags.repositories.ml_models]
+name = "ml_models"
+description = "Machine learning models repository"
+path = "../ml-models"
+remote_url = "git@github.com:company/ml-models.git"
+branch = "main"
+enabled = true
+auto_sync = false
+priority = 2
+
+[ctags.repositories.data_pipeline]
+name = "data_pipeline"
+description = "Data processing pipeline"
+path = "../data-pipeline"
+remote_url = "git@github.com:company/data-pipeline.git"
+branch = "main"
+enabled = true
+auto_sync = false
+priority = 3
+
+[ctags.repositories.ai_tools]
+name = "ai_tools"
+description = "AI development tools and utilities"
+path = "~/ai-tools"
+remote_url = "git@github.com:user/ai-tools.git"
+branch = "main"
+enabled = false
+auto_sync = false
+priority = 4
+
+[ctags.repositories.research_papers]
+name = "research_papers"
+description = "Research paper implementations"
+path = "~/research/papers"
+remote_url = ""
+branch = ""
+enabled = false
+auto_sync = false
+priority = 5
+
+# Multiple tag configurations for AI-enhanced development
+[ctags.tags]
+
+[ctags.tags.ai_comprehensive]
+name = "ai_comprehensive"
+description = "Comprehensive AI/ML project tags across repositories"
+tag_file = "ai_comprehensive_tags"
+repositories = ["ai_project", "ml_models", "data_pipeline"]
+source_dirs = ["."]
+languages = ["python", "jupyter", "lua", "javascript", "typescript", "rust", "go"]
+exclude_patterns = [".git", "node_modules", "target", "__pycache__", ".venv", "venv", "data", "models", "checkpoints"]
+custom_options = ["--recurse=yes", "--sort=yes", "--python-kinds=+cfmvi", "--fields=+iaS", "--extra=+q"]
+auto_generate = true
+project_root_markers = [".git", "requirements.txt", "pyproject.toml", "setup.py", "environment.yml"]
+ai_context = true
+
+[ctags.tags.ml_pipeline]
+name = "ml_pipeline"
+description = "ML pipeline and data processing tags"
+tag_file = "ml_pipeline_tags"
+repositories = ["data_pipeline", "ml_models"]
+source_dirs = ["pipeline", "data", "preprocessing", "models"]
+languages = ["python", "yaml", "json"]
+exclude_patterns = [".git", "__pycache__", ".venv", "venv", "*.parquet", "*.csv", "*.pkl"]
+custom_options = ["--recurse=yes", "--sort=yes", "--python-kinds=+cfmvi"]
+auto_generate = true
+
+[ctags.tags.copilot_enhanced]
+name = "copilot_enhanced"
+description = "Enhanced GitHub Copilot context with cross-repository awareness"
+tag_file = "copilot_enhanced_tags"
+repositories = ["ai_project", "ai_tools", "research_papers"]
+source_dirs = ["."]
+languages = ["python", "javascript", "typescript", "lua", "rust", "go"]
+exclude_patterns = [".git", "node_modules", "target", "__pycache__", "data", "models"]
+custom_options = ["--recurse=yes", "--sort=yes", "--fields=+iaS", "--extra=+q", "--python-kinds=+cfmvi"]
+auto_generate = true
+ai_context = true
+ai_priority = "high"  # High priority for AI tools
+
+[ctags.tags.apis]
+name = "apis"
+description = "API definitions and documentation"
+tag_file = "api_tags"
+source_dirs = ["api", "src/api", "openapi", "swagger"]
+languages = ["yaml", "json", "typescript", "python"]
+exclude_patterns = ["test", "spec"]
+custom_options = ["--recurse=yes", "--sort=yes"]
+auto_generate = false
+
+[ctags.tags.config]
+name = "config"
+description = "Configuration files and settings"
+tag_file = "config_tags"
+source_dirs = ["config", "configs", "."]
+languages = ["yaml", "toml", "json", "dockerfile", "bash"]
+include_patterns = ["*.yml", "*.yaml", "*.toml", "*.json", "Dockerfile*", "*.sh"]
+exclude_patterns = [".git", "node_modules"]
+custom_options = ["--recurse=yes", "--sort=yes"]
+auto_generate = false
+
+# AI-enhanced gutentags (disabled in favor of LSP + AI)
+[ctags.gutentags]
+enabled = false
+
+# VEM command configuration for AI-enhanced ctags management
+[ctags.commands]
+# Command: vem generate ctags <repo> <option>
+generate_command = "ctags"
+generate_options = ["--recurse=yes", "--sort=yes", "--fields=+iaS", "--extra=+q", "--python-kinds=+cfmvi"]
+ai_enhance = true  # Enable AI-powered tag enhancement
+
+# Command: vem update ctags <repo> <option>
+update_command = "ctags"
+update_options = ["--recurse=yes", "--sort=yes", "--append=no", "--python-kinds=+cfmvi"]
+ai_context_update = true  # Update AI context when tags change
+
+# Command: vem delete ctags <repo> <option>
+delete_command = "rm"  
+delete_options = ["-f"]
+ai_context_cleanup = true  # Clean AI context when tags deleted
+
+# Command: vem list ctags
+list_format = "enhanced"  # AI-enhanced listing with relevance scores
+list_fields = ["name", "repository", "tag_file", "last_updated", "size", "ai_score", "copilot_ready"]
+
+# Command: vem clean ctags
+clean_backup = true
+clean_confirm = false
+ai_context_reset = true  # Reset AI context on clean
+
+# AI integration settings
+[ctags.ai_integration]
+copilot_enabled = true
+chatgpt_enabled = true
+codeium_enabled = true
+context_window = 4096  # Number of lines to include in AI context
+smart_filtering = true  # Filter tags based on AI relevance
+auto_prioritize = true  # Auto-prioritize tags based on AI usage patterns
+
+[theme]
+name = "catppuccin"
+variant = "mocha"
+background = "dark"
+
+[keymaps]
+leader = " "
+custom_maps = [
+    # File Management
+    { key = "<C-n>", action = ":NvimTreeToggle<CR>", mode = "n" },
+    { key = "<C-p>", action = ":Telescope find_files<CR>", mode = "n" },
+    { key = "<C-f>", action = ":Telescope live_grep<CR>", mode = "n" },
+    
+    # LSP
+    { key = "gd", action = "vim.lsp.buf.definition", mode = "n", type = "lua" },
+    { key = "gD", action = "vim.lsp.buf.declaration", mode = "n", type = "lua" },
+    { key = "K", action = "vim.lsp.buf.hover", mode = "n", type = "lua" },
+    { key = "gi", action = "vim.lsp.buf.implementation", mode = "n", type = "lua" },
+    { key = "gr", action = "vim.lsp.buf.references", mode = "n", type = "lua" },
+    
+    # AI Tools - ChatGPT
+    { key = "<leader>cc", action = ":ChatGPT<CR>", mode = "n" },
+    { key = "<leader>ce", action = ":ChatGPTEditWithInstructions<CR>", mode = "n" },
+    { key = "<leader>cg", action = ":ChatGPTRun grammar_correction<CR>", mode = "n" },
+    { key = "<leader>ct", action = ":ChatGPTRun translate<CR>", mode = "n" },
+    { key = "<leader>cd", action = ":ChatGPTRun docstring<CR>", mode = "n" },
+    { key = "<leader>ca", action = ":ChatGPTRun add_tests<CR>", mode = "n" },
+    { key = "<leader>co", action = ":ChatGPTRun optimize_code<CR>", mode = "n" },
+    { key = "<leader>cf", action = ":ChatGPTRun fix_bugs<CR>", mode = "n" },
+    { key = "<leader>cx", action = ":ChatGPTRun explain_code<CR>", mode = "n" }
+]
+
+[lsp]
+enabled = true
+provider = "native"
+auto_install = true
+languages = [
+    "lua_ls",
+    "rust_analyzer",
+    "pyright", 
+    "tsserver",
+    "jsonls",
+    "html",
+    "cssls",
+    "gopls",
+    "clangd"
+]
+
+[ai_tools]
+enabled = true
+
+[ai_tools.copilot]
+enabled = true
+accept_key = "<C-J>"
+disable_tab = true
+filetypes = ["*"]
+
+[ai_tools.chatgpt]
+enabled = true
+api_key_cmd = "echo $OPENAI_API_KEY"
+model = "gpt-3.5-turbo"
+max_tokens = 300
+temperature = 0
+
+[ai_tools.codeium]
+enabled = true
+accept_key = "<C-g>"
+next_key = "<C-;>"
+prev_key = "<C-,>"
+clear_key = "<C-x>"
+
+[treesitter]
+enabled = true
+auto_install = true
+languages = [
+    "c", "lua", "vim", "vimdoc", "query",
+    "python", "javascript", "typescript", 
+    "rust", "go", "json", "html", "css",
+    "bash", "dockerfile", "yaml", "toml"
+]
+
+[completion]
+enabled = true
+sources = ["nvim_lsp", "luasnip", "buffer", "path"]
+snippet_engine = "luasnip"
+
+[git]
+enabled = true
+show_changes = true
+signs = true
+
+[performance]
+swap_files = false
+backup_files = false
+undo_levels = 10000
+update_time = 250
+
+[compatibility]
+neovim_version = "0.8.0+"
+
+[requirements]
+environment_vars = ["OPENAI_API_KEY"]
+external_tools = ["git", "curl", "node", "npm"]
