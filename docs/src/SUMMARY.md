@@ -12,6 +12,7 @@
   - [switch](./commands/switch.md)
   - [current](./commands/current.md)
   - [remove](./commands/remove.md)
+  - [ctags](./commands/ctags.md)
 - [Configuration](./configuration.md)
 - [Environment Structure](./environment-structure.md)
 
